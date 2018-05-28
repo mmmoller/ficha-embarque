@@ -1,0 +1,186 @@
+extends layout3
+
+block content
+	div.container
+		center
+			script.
+				function myFunction() {
+					window.print();
+				}
+			script.
+				$(document).ready(function() {
+					$('#example').DataTable( {
+						"paging":   false,
+						"ordering": false,
+						"info":     false,
+						dom: 'rt',
+						buttons: [{
+							extend: 'print',
+							title: "Ficha de Cadastro"
+							}
+						]
+					} );
+				});
+			button#hide(onclick="myFunction()") Print this page
+			br
+			img(src="/img/icea.jpg", style='width:5%')
+			table#example(style="font-size: 10px")
+				thead
+					tr
+						th(style="width:33%")
+						th(style="width:33%")
+						th(style="width:33%")
+				tbody
+					tr
+						td(colspan="2")
+							strong Nome Completo:
+							|  #{cadastro.name}
+						td
+							strong Ficha Cadastro Nº:
+							|  #{cadastro.num_registro}
+					tr
+						td
+							strong Posto:
+							|  #{cadastro.posto}
+						td
+							strong Nome de guerra:
+							|  #{cadastro.name_guerra}
+						td
+							strong Identidade:
+							|  #{cadastro.identidade}
+					tr
+						td
+							strong CPF:
+							|  #{cadastro.cpf}
+						td
+							strong SARAM:
+							|  #{cadastro.saram}
+						td
+							strong Telefone:
+							|  #{cadastro.telefone}
+					tr
+						td(colspan="2")
+							strong Email:
+							|  #{cadastro.email}
+						td
+							strong Unidade/Empresa:
+							|  #{cadastro.unidade}
+					tr
+						td(colspan="2")
+							strong Motivo:
+							|  #{cadastro.curso}
+						td
+							strong Leito:
+							|  #{cadastro.leito}
+					tr
+						td
+							strong Data de entrada:
+							if (cadastro.checkIn)
+								|  #{moment(cadastro.checkIn).format("DD/MM/YYYY HH:mm:ss")}
+							else
+								| 
+						td
+							strong Saída Prevista:
+							|  #{moment(cadastro.dateOut).format("DD/MM/YYYY")}
+						td
+							strong Nº Dependentes:
+							|  #{cadastro.dependente}
+							
+					tr
+						td(colspan="2")
+							strong Material retirado:
+							| &nbsp;Lençol ( ) &nbsp;| &nbsp;Fronha ( ) &nbsp;| &nbsp;Toalha de banho ( ) &nbsp;| &nbsp;Toalha de rosto ( )
+						td
+							strong Situação:
+							|  #{cadastro.solicitante}
+					tr
+						td ___________________
+						td 
+						td ________________________
+					tr
+						td Assinatura do Hóspede
+						td 
+						td Assinatura do Recepcionista
+					tr
+						td
+					tr
+						td ------------------------------------------------------------
+						td ------------------------------------------------------------
+						td ------------------------------------------------------------
+					tr
+						td
+					tr
+						td(colspan="2")
+							strong Nome Completo:
+							|  #{cadastro.name}
+						td
+							strong Controle Nº:
+							|  #{cadastro.num_registro}
+					tr
+						td
+							strong CPF:
+							|  #{cadastro.cpf}
+						td
+							strong SARAM:
+							|  #{cadastro.saram}
+						td
+							strong Telefone:
+							|  #{cadastro.telefone}
+					tr
+						td(colspan="2")
+							strong Email:
+							|  #{cadastro.email}
+						td
+							strong Unidade/Empresa:
+							|  #{cadastro.unidade}
+					tr
+						td
+							strong Data de saída:
+							if (cadastro.checkOut)
+								|  #{moment(cadastro.checkOut).format("DD/MM/YYYY HH:mm:ss")}
+							else
+								| 
+						td
+							strong Nº Dependentes:
+							| #{cadastro.dependente}
+						td
+							strong Nº de ADE:
+					tr
+						td(colspan="3")
+							| Importância R$ __________ proveniente de ____ diárias de hospedagens no hotel do ICEA.
+					tr
+						td(colspan="2")
+							strong Forma de pagamento:
+							| &nbsp;GRU ( ) &nbsp;| &nbsp;Consignado ( )
+						td ___________________
+					tr
+						td
+						td
+						td Assinatura do Hóspede
+					tr
+						td
+					tr
+						td ------------------------------------------------------------
+						td ------------------------------------------------------------
+						td ------------------------------------------------------------
+					tr
+						td
+					tr
+						td(colspan="2")
+							strong Recebido do Sr. (a):
+							|  #{cadastro.posto} #{cadastro.name}
+						td
+							strong Recibo Nº:
+							|  #{cadastro.num_registro}
+					tr
+						td(colspan="3")
+							| Importância R$ __________ proveniente de ____ diárias de hospedagens no hotel do ICEA.
+					tr
+						td(colspan="2")
+							strong Forma de pagamento:
+							| &nbsp;GRU ( ) &nbsp;| &nbsp;Consignado ( )
+						td ________________________
+					tr
+						td
+						td(colspan="2", style="text-align: right;")
+							| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; São José dos Campos, ___ de __________ de 20___.

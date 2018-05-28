@@ -1,0 +1,64 @@
+extends layout
+
+block content
+	div.container
+		div.row
+			center
+				div.section-wall
+					h1.section-title Solicitações de reservas
+
+	script.
+	
+		$(document).ready(function() {
+			$('#recepcaoo').DataTable( {
+				"info":     false,
+			} );
+		});
+	div
+		div.container#register-table-wrapper
+			center
+				table#recepcaoo.display.compact.cell-border
+					thead
+						tr
+							th Posto/Graduação
+							th Nome
+							th Saram
+							th CPF
+							th Data de Entrada
+							th Data de Saída
+							th Motivo/Curso
+							th Solicitante
+							th Sexo
+							th Reservar
+							th Motivo Cancelamento
+							th Cancelar
+					tbody
+						each cadastro in cadastros
+							tr
+								td #{cadastro.posto}
+								td
+									a(href='/home/registro/cadastro?_id=#{cadastro._id}', target='blank') #{cadastro.name}
+								td #{cadastro.saram}
+								td #{cadastro.cpf}
+								td #{moment(cadastro.dateIn).format("DD/MM/YYYY")}
+								td #{moment(cadastro.dateOut).format("DD/MM/YYYY")}
+								td #{cadastro.curso}
+								td #{cadastro.solicitante}
+								td #{cadastro.sexo}
+								td
+									form(class='form-signin', action='/home/reserva', method='POST')
+										input(type='hidden', name='_id', value=cadastro._id)
+										button(class='btn btn-lg btn-primary btn-block', type='submit') Reservar
+										span.clearfix
+								form(class='form-signin', action='/home/reserva/cancelar', method='POST')
+									input(type='hidden', name='_id', value=cadastro._id)
+									td
+										input(type= 'text', name='motivo_cancelar_reserva', list='motivo_cancelar_reserva', required)
+										datalist(id='motivo_cancelar_reserva')
+											option(value='não há vagas disponíveis') Não há vagas disponíveis
+											option(value='curso foi cancelado') Curso foi cancelado
+											option(value='outro') Insira o motivo
+											
+									td
+										button(class='btn btn-lg btn-danger btn-block', type='submit') Cancelar
+									span.clearfix

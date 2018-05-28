@@ -1,0 +1,24 @@
+extends layout
+
+block content
+	div.container
+		div.row
+			center
+				div.section-wall
+					h1.section-title
+						#user
+							if user
+								h1.text-center.login-title Trocar senha
+	div.container(style="margin-top:30px")
+		div.row
+			center
+				div.section-wall
+					//h4.section-title Trocar senha
+					form(class='form-signin', action='/home/senha', method='POST')
+						input(type='password', name='old_password', class='form-control nomargin', placeholder='Senha antiga', required, autofocus)
+						input(type='password', name='new_password', class='form-control nomargin', placeholder='Senha nova', required)
+						input(type='password', name='new_password_confirm', class='form-control nomargin', placeholder='Confirmação da senha nova', required)
+						button(class='btn btn-lg btn-primary btn-block', type='submit') Trocar
+					span.clearfix
+	
+	

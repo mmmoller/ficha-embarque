@@ -1,0 +1,148 @@
+extends layout
+
+block content
+	div.container
+		center
+			div.section-wall
+				h1.section-title Registro geral
+				form(class='form-signin', action='/home/informacao/registro_geral', method='GET')
+					input#from(type='text', name='from' class='form-control', placeholder='Data inicial', required)
+					input#dateIn(type='hidden', name='dateIn', class='form-control')
+					input#to(type='text', name='to' class='form-control', placeholder='Data final')
+					input#dateOut(type='hidden', name='dateOut', class='form-control')
+					input(type='hidden', name='recente', class='form-control')
+					button(class='btn btn-lg btn-primary btn-block', type='submit') Visualizar Registros
+					span.clearfix
+	script.
+		$( function() {
+			var dateFormat = "dd/mm/yy",
+			from = $( "#from" ).datepicker(
+			{ showOtherMonths: true,
+			selectOtherMonths: true,
+			dateFormat: dateFormat,
+			altField: "#dateIn",
+			altFormat: "yy-mm-dd"
+			}),
+			to = $( "#to" ).datepicker(
+			{ showOtherMonths: true,
+			selectOtherMonths: true,
+			dateFormat: dateFormat,
+			altField: "#dateOut",
+			altFormat: "yy-mm-dd"
+			});
+		});
+		
+		$(document).ready( function() {
+	
+			$('#default-table tfoot th').each( function () {
+				var title = $(this).text();
+				$(this).html( '<input type="text" placeholder="Search '+title+'" />' );
+			} );
+			
+			// DataTable
+			var table = $('#default-table').DataTable( {
+				"ordering" : false,
+				"search": {
+					"caseInsensitive": false
+				},
+				dom: 'lBfrtip',
+				buttons: [
+					{
+						extend: 'print',
+						customize: function ( win ) {
+							$(win.document.body)
+								.css( 'font-size', '10pt' )
+								.prepend(
+									'<img src="http://datatables.net/media/images/logo-fade.png" style="position:absolute; top:0; left:0;" />'
+								);
+
+							$(win.document.body).find( 'table' )
+								.addClass( 'compact' )
+								.css( 'font-size', 'inherit' )
+								.css( 'page-break-inside', 'auto');
+							
+							$(win.document.body).find( 'tbody:before' )
+								.css( 'line-height', '1em')
+								.css( 'content', '\200c' )
+								.css( 'display', 'block')
+						}
+					}
+				]
+			});
+			
+			// Apply the search
+			table.columns().every( function () {
+				var that = this;
+				
+				$( 'input', this.footer() ).on( 'keyup change', function () {
+					if ( that.search() !== this.value ) {
+						that
+							.search( this.value )
+							.draw();
+					}
+				} );
+			} );
+			
+			var table2 = $('#default-table2').DataTable( {
+				"ordering" : false,
+				"searching" : false,
+				"info": false,
+			} );
+		});
+			
+	div.container.default-table-wrapper.section-to-print
+		center
+			table#default-table.display.compact.cell-border
+				thead
+					tr
+						th Leitos
+						each registro in registros
+							th #{moment(registro.data).format("DD/MM/YY")}
+				tbody
+					-for (var i = 0; i < leitos.length; ++i){
+						tr
+							td #{leitos[i].cod_leito}
+							each registro in registros
+								td
+									if (registro.estado[i] == "livre")
+										| #{registro.estado[i]}
+									else
+										a(href='/home/dados/cadastro?_id=#{registro.cadastro_id[i]}', target='blank') #{registro.estado[i]}
+					-}
+				tfoot
+					tr
+						th Leitos
+						each registro in registros
+							th #{moment(registro.data).format("DD/MM/YY")}
+	div.container.default-table-wrapper
+		center
+			table#default-table2.display.compact.cell-border
+				thead
+					tr
+						th Leitos
+						each registro in registros
+							th #{moment(registro.data).format("DD/MM/YY")}
+				tbody
+					tr
+						td Disponíveis
+						each livre in livres
+							td #{livre}
+					tr
+						td Ocupados
+						each ocupado in ocupados
+							td #{ocupado}
+					tr
+						td Reservados
+						each reservado in reservados
+							td #{reservado}
+					tr
+						td Manutenção
+						each reservado in reservados
+							td #{manutencao}
+					tr
+						td Total
+						each reservado in reservados
+							td #{total}
+						
+
+	

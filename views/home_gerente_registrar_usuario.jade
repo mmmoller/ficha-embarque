@@ -1,0 +1,22 @@
+extends layout
+
+block content
+	div.container
+		div.row
+			center
+				div.section-wall
+					h1.section-title Criar novo usuário
+	div.container(style="margin-top:30px")
+		div.row
+			center
+				div.section-wall
+					form(class='form-signin', action='/home/gerente/registrar/usuario', method='POST')
+						input(type='text', name='username', class='form-control', placeholder='Usuario',required, autofocus)
+						input(type='password', name='password', class='form-control nomargin', placeholder='Senha', required)
+						input(type='email', name='email', class='form-control', placeholder='Email',required)
+						input(type='text', name='name', class='form-control', placeholder='Nome',required)
+						button(class='btn btn-lg btn-primary btn-block', type='submit') Criar
+						span.clearfix
+				#message
+					if message
+						h1.text-center.error-message #{message}

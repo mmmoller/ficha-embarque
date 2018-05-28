@@ -1,0 +1,42 @@
+extends layout
+
+block content
+	script.
+		$(document).ready(function() {
+			$('#default-table').DataTable( {
+				"info": false,
+				"language": {
+					"emptyTable": "Nenhum cadastro"
+				},
+			} );
+		});
+	div.container.default-table-wrapper
+		center
+			table#default-table.display.cell-border
+				thead
+					tr
+						th Nome
+						th Tipo
+						th Valor
+						th Validar
+						th Recusar
+				tbody
+					- for(var i=0; i < pagamento.length; i = i+6){
+						tr
+							td
+								a(href='/home/dados/cadastro?_id=#{pagamento[i+2]}', target='blank') #{pagamento[i+1]}
+							td #{pagamento[i+3]} Número: #{pagamento[i+5]}
+							td R$ #{Number(pagamento[i+4]).toFixed(2)}
+							form(action='/home/financeiro/pagamento', method='POST')
+								input(type='hidden', name='tipo', value='validar')
+								input(type='hidden', name='cpf', value=pagamento[i])
+								input(type='hidden', name='_id', value=pagamento[i+2])
+								input(type='hidden', name='valor', value=Number(pagamento[i+4]).toFixed(2))
+								td
+									button.btn.btn-primary(type='submit') Validar pagamento
+							form(action='/home/financeiro/pagamento', method='POST')
+								input(type='hidden', name='cpf', value=pagamento[i])
+								input(type='hidden', name='tipo', value='recusar')
+								td
+									button.btn.btn-primary(type='submit') Recusar pagamento
+					-}

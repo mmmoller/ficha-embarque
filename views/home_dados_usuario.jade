@@ -1,0 +1,29 @@
+extends layout
+
+block content
+	div.container
+		div.row
+			center
+				div.section-wall
+					h1.section-title Dados de usuário
+	div.container#folha-ce-table-wrapper
+		center
+			table#folha-ce-table.table-striped.table-bordered
+				tbody
+					tr
+						td(style='width:30%') Nome de usuário
+						td #{user.username}
+					tr
+						td E-mail
+						td #{user.email}
+					tr
+						td Nome completo
+						td #{user.name}
+					- for(var i = 0; i < user.permissao.length; i++){
+						tr
+							td #{dic[i]}
+							if (user.permissao[i])
+								td Acesso Permitido
+							else
+								td Acesso Negado
+					- }

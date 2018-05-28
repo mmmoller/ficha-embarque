@@ -1,0 +1,54 @@
+extends layout
+
+block content
+	div.container
+		center
+			div.section-wall
+				h1.section-title Adicionar ou remover leitos
+
+	script.
+		$(document).ready(function() {
+			$('#default-table').DataTable( {
+				"language": {
+					"emptyTable": "Nenhum leito"
+				},
+				"search": {
+					"caseInsensitive": false
+				},
+				paging: false,
+			} );
+		});
+	div.container.default-table-wrapper
+		center
+			form(action='/home/gerente/alterar/leito', class="form-inline",method='POST')
+				input(type="text", name="bloco", class="form-control", placeholder="Bloco") 
+				input(type="text", name="quarto",class="form-control", placeholder="Quarto") 
+				input(type="text", name="vaga",class="form-control", placeholder="Vaga") 
+				input(type="hidden", name="tipo",class="form-control", value="adicionar") 
+				button.btn.btn-primary(type="submit") Adicionar
+	div.container.default-table-wrapper
+		center
+			form(action='/home/gerente/alterar/leito', method='POST')
+				button.btn.btn-primary(type="submit") Remover
+				table#default-table.display.compact.cell-border
+					thead
+						tr
+							th Selecionar
+							th Cod_Leito
+							th Bloco
+							th Quarto
+							th Leito
+					tbody
+						-for (var i = 0; i < leitos.length; i++){
+							tr
+								td
+									input(type="checkbox", name="#{leitos[i].cod_leito}", style='width: 20px; height: 20px;')
+								td #{leitos[i].cod_leito}
+								td #{leitos[i].bloco}
+								td #{leitos[i].quarto}
+								td #{leitos[i].vaga}
+						-}
+				input(type="hidden", name="tipo", value="remover")
+				
+	
+	

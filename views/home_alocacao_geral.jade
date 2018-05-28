@@ -1,0 +1,56 @@
+extends layout
+
+block content
+	div.container
+		div.row
+			center
+				div.section-wall
+					h1.section-title Escolha #{num_hospede} leito(s)
+
+	div.container#manutencao-table-wrapper
+		center
+			table#manutencao-table.table-bordered
+				form(class='form-signin', action='/home/' + '#{endereco}', method='POST')
+					thead
+						tr
+							th Prédio
+							th Quartos
+							th(colspan='3')
+								button(class='btn btn-lg btn-primary btn-block', type='submit',style='text-align:center;') Alocar
+								span.clearfix
+							th(colspan='50') 
+					tbody
+						-var Bloco = new Map();
+						-for(var idx = 0; idx < leitos.length; idx++){
+						-   var bloco_atual = leitos[idx].bloco;
+						-	var quarto_atual = leitos[idx].quarto;
+						- 	var vaga_atual = leitos[idx].vaga;
+						-	var quartos_bloco = Bloco.get(bloco_atual); //map de [quarto]->{lista leito} para todos quartos desse bloco
+						-	if(quartos_bloco == undefined){
+						-		quartos_bloco = new Map();
+						-	}
+						-	var vagas_quarto = quartos_bloco.get(quarto_atual);
+						-	if(vagas_quarto == undefined){
+						-		vagas_quarto = new Map();
+						-	}
+						-	vagas_quarto.set(vaga_atual, leitos[idx]); //salvando o leito
+						-	quartos_bloco.set(quarto_atual, vagas_quarto);
+						-	Bloco.set(bloco_atual, quartos_bloco);
+						-}
+						-Bloco.forEach(function(lista_quartos, nome_bloco){
+							tr
+								td #{nome_bloco}
+								-lista_quartos.forEach(function(lista_leitos, nome_quarto){
+									td(style='background-color: #b3ffb3')
+										.dropdown#manutencao-dropdown
+											a.dropdown-toggle(role='button', data-target='#', href='#', data-toggle='dropdown', aria-haspopup="true", aria-expanded="false")
+													| #{nome_bloco}#{nome_quarto}
+												ul.dropdown-menu
+													-lista_leitos.forEach(function(objeto, vaga){
+														li
+															a(tabindex='-1' href='#' style='color:#267326;font-weight: bold;') #{objeto.bloco+objeto.quarto+objeto.vaga + "   "}
+																input(type="checkbox", name='#{objeto.bloco+objeto.quarto+objeto.vaga}') 
+													-});
+								-});
+						-});
+				

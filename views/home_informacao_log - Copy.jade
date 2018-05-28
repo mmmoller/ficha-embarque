@@ -1,0 +1,93 @@
+extends layout
+
+block content
+	script.
+		$(document).ready(function () {
+			$("#modulo").change(function () {
+				var val = $(this).val();
+				if (val == "Recepção") {
+					$("#query").html("<option value=''>Escolher query</option><option value='check-in'>Check-in</option><option value='cancelar check-in'>Cancelar check-in</option><option value='check-out'>Check-out</option><option value='estender estada'>Estender estada</option><option value='mudança'>Mudança</option>");
+				} else if (val == "Reserva") {
+					$("#query").html("<option value=''>Escolher query</option><option value='reservar'>Reserva efetuada</option><option value='cancelar solicitação'>Solicitação cancelada</option>");
+				} else if (val == "Manutenção") {
+					$("#query").html("<option value=''>Escolher query</option><option value='inserir pane'>Pane inserida</option><option value='remover pane'>Pane removida</option><option value='ocupabilidade'>Ocupabilidade alterada</option>");
+				} else if (val == "Cadastro") {
+					$("#query").html("<option value=''>Escolher query</option><option value='cadastrar'>Solicitação de reserva</option>");
+				} else if (val == "Gerência") {
+					$("#query").html("<option value=''>Escolher query</option><option value='alterar permissão'>Alterar Permissão</option><option value='criar usuário'>Criar Usuário</option><option value='remover usuário'>Remover Usuário</option>");
+				} else if (val == "Financeiro") {
+					$("#query").html("<option value=''>Escolher query</option><option value='inserir financeiro'>Ganho/gastos inseridos</option><option value='alterar diária'>Alteração no valor de diária</option>");
+				} else if (val == "Lavanderia") {
+					$("#query").html("<option value=''>Escolher query</option><option value='inserir folha'>Folha inserida</option>");
+				}
+			});
+		});
+	div.container
+		center
+			div.section-wall
+				h1.section-title Log de alterações no sistema
+	div.container(style="margin-top:30px")
+		div.row
+			center
+				div.section-wall
+					h1 Escolha uma data para exibir os logs
+					form(class='form-signin', action='/home/gerente/log', method='GET')
+						input(type='date', name='dataIn' class='form-control', placeholder='Data', autofocus)
+						input(type='date', name='dataOut' class='form-control', placeholder='Data')
+						select(name='modulo', id='modulo' class='form-control')
+							option(value='') Escolher modulo
+							option(value='Recepção') Recepção
+							option(value='Reserva') Reserva
+							option(value='Manutenção') Manutenção
+							option(value='Cadastro') Cadastro
+							option(value='Gerência') Gerência
+							option(value='Financeiro') Financeiro
+							option(value='Lavanderia') Lavanderia
+						select(name='query', id='query' class='form-control')
+							option(value='') Escolher query
+						button(class='btn btn-lg btn-primary btn-block', type='submit') Visualizar Logs
+						span.clearfix
+	
+	script.
+		$(document).ready(function() {
+			$('#default-table').DataTable( {
+				"language": {
+					"emptyTable": "Nenhum log"
+				},
+			} );
+		});
+	div.container.default-table-wrapper
+		center
+			table#default-table.display.compact.cell-border
+				thead
+					tr
+						th Data
+						th Modulo
+						th(style="width:30%") Log
+						th Cadastro
+						th Leito
+						th Usuário
+				tbody
+					-for (var j = 0; j < log.length; j++){
+
+						-for (var i = 0; i < log[j].log.length; i++){
+							if ((modulo == "" || modulo == log[j].modulo[i]) && (query == '' || query == log[j].query[i]))
+								tr
+									td #{moment(log[j].data).format("DD/MM/YYYY")} #{log[j].horario[i]}
+									td #{log[j].modulo[i]}
+									td #{log[j].log[i]}
+									if (log[j].modulo[i] == "Lavanderia")
+										td
+											a(href='/home/registro/lista?_id=#{log[j].cadastro_id[i]}', target='blank') folha
+									else if (log[j].modulo[i] == "Gerência")
+										td
+											a(href='/home/registro/usuario?_id=#{log[j].cadastro_id[i]}', target='blank') #{log[j].cadastro[i]}
+									else
+										td
+											a(href='/home/registro/cadastro?_id=#{log[j].cadastro_id[i]}', target='blank') #{log[j].cadastro[i]}
+									td #{log[j].leito[i]}
+									td #{log[j].usuario[i]}
+						-}
+					-}
+	
+	

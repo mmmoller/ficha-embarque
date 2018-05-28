@@ -1,0 +1,23 @@
+extends layout
+
+block content
+	div.container
+		div.row
+			center
+				div.section-wall
+					h1.section-title Relatórios (Não funcional)
+	div.container(style="margin-top:30px")
+		div.row
+			center
+				div.section-wall
+					form(class='form-signup', action='/home/relatorio/teste', method='GET', target='_blank')
+						button(class='btn btn-lg btn-primary btn-block', type='submit') Relatorio Teste
+						span.clearfix
+					br
+					form(class='form-signup', action='/home/gerente/signup', method='GET')
+						button(class='btn btn-lg btn-primary btn-block', type='submit') Criar Usuários
+						span.clearfix
+					br
+					form(class='form-signup', action='/home/gerente/registro', method='GET')
+						button(class='btn btn-lg btn-primary btn-block', type='submit') Analisar Registros
+						span.clearfix

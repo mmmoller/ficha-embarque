@@ -1,0 +1,26 @@
+extends layout2
+
+block content
+	-if ( message != undefined && message.length){
+		div.container(style="margin-top:30px")
+			div.row
+				center
+					if ( message.toString().charAt(0) == '!')
+						div.alert.alert-danger #{message.toString().slice(1)}
+					else
+						div.alert.alert-success #{message}
+	-}
+	div.container(style="margin-top:30px")
+		div.row
+			center
+				div.section-wall
+					h1.text-center.login-title Digite seu nome de usuário e senha
+					//img(class='profile-img', src='https://lh5.googleusercontent.com/-b0-k99FZlyE/AAAAAAAAAAI/AAAAAAAAAAA/eu7opA4byxI/photo.jpg?sz=120')
+					form(class='form-signin', action='/login', method='POST')
+						input(type='text', name='username' class='form-control', placeholder='Usuário',required, autofocus)
+						input(type='password', name='password' class='form-control', placeholder='Senha', required)
+						button(class='btn btn-lg btn-primary btn-block', type='submit') Login
+						span.clearfix
+				//#message
+				//if message
+				//	h1.text-center.error-message #{message}

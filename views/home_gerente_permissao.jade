@@ -1,0 +1,31 @@
+extends layout
+
+block content
+	div.container
+		div.row
+			center
+				div.section-wall
+					h1.section-title Permissoes
+					
+	div.container#folha-ce-table-wrapper
+		center
+			table#folha-ce-table.table-striped.table-bordered
+				thead
+					tr
+						th(style='width:25%') Usuario
+						th(colspan='6') Permissoes
+						th Alterar
+				tbody
+					each user, j in users
+						tr
+							td(style="bold")
+								a(href='/home/dados/usuario?_id=#{user._id}', target='blank') #{user.username}
+							form(name="permissao",method="post",action="/home/gerente/permissao" )
+								-for(var i = 0; i < user.permissao.length; ++i){
+									td
+										input(type="checkbox", checked=user.permissao[i], name=dic[i]) 
+										| #{dic[i]}
+								-}
+								td 
+									button.btn.btn-primary(type="submit", value=user.username, name="bizu") Alterar
+

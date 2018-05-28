@@ -1,0 +1,34 @@
+extends layout
+
+block content
+	script.
+		$(document).ready(function() {
+			$('#default-table').DataTable( {
+				"info": false,
+				"language": {
+					"emptyTable": "Nenhum cadastro"
+				},
+			} );
+		});
+	div.container.default-table-wrapper
+		center
+			table#default-table.display.cell-border
+				thead
+					tr
+						th Nome
+						th CPF
+						th Motivo
+						th Remover
+				tbody
+					- for(var i=0; i < blacklist.length; i = i+4){
+						tr
+							td
+								a(href='/home/dados/cadastro?_id=#{blacklist[i+2]}', target='blank') #{blacklist[i+1]}
+							td #{blacklist[i]}
+							td #{blacklist[i+3]}
+							td
+								form(action='/home/financeiro/blacklist', method='POST')
+									input(type='hidden', name='tipo', value='remover')
+									input(type='hidden', name='cpf', value=blacklist[i])
+									button.btn.btn-primary(type='submit') Remover da Blacklist
+					-}

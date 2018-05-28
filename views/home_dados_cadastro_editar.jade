@@ -1,0 +1,56 @@
+extends layout
+
+block content
+	div.container
+		div.row
+			center
+				div.section-wall
+					h1.section-title Editar dados de cadastro
+	div.container.default-table-wrapper
+		center
+			table#folha-ce-table.table-striped.table-bordered
+				tbody
+					form(action='/home/dados/cadastro/editar', method='POST')
+						tr(style="margin-top: 10px;")
+							td Nome
+							td
+								input(type="text", name="name", value="#{cadastro.name}")
+						tr
+							td Nome de guerra
+							td
+								input(type="text", name="name_guerra", value="#{cadastro.name_guerra}")
+						tr
+							td SARAM
+							td
+								input.saram(type="text", name="saram", value="#{cadastro.saram}")
+						tr
+							td Identidade
+							td
+								input(type="text", name="identidade", value="#{cadastro.identidade}")
+						tr
+							td Unidade
+							td
+								input(type="text", name="unidade", value="#{cadastro.unidade}")
+						tr
+							td Endereço
+							td
+								input(type="text", name="endereco", value="#{cadastro.endereco}")
+						tr
+							td Telefone
+							td
+								input.telefone(type="text", name="telefone", value="#{cadastro.telefone}")
+						tr
+							td E-mail
+							td
+								input(type="email", name="email", value="#{cadastro.email}")
+						tr
+							td CPF
+							td
+								input.cpf(type="text", name="cpf", value="#{cadastro.cpf}")
+						tr
+							td(colspan="2")
+								input(type="hidden", name="_id", value="#{cadastro._id}")
+								button.btn.btn-primary(type='submit') Confirmar edição
+						
+
+		

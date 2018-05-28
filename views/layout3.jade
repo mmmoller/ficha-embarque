@@ -1,0 +1,27 @@
+doctype html
+html
+	head
+		title= title
+		script(type="text/javascript" src="/scripts/jquery.2.1.1.query.min.js")
+		script(type="text/javascript" src="/scripts/3.3.7.js.bootstrap.min.js")
+		script(type="text/javascript" src="/scripts/jquery.mask.min.js")
+		script(type="text/javascript" src="/scripts/jquery.maskMoney.min.js")
+		script(type="text/javascript" src="/scripts/jquery-ui.js")
+		script(type="text/javascript" src="/scripts/datatables.min.js")
+		script(type="text/javascript" src="/scripts/dataTables.buttons.min.js")
+		script(type="text/javascript" src="/scripts/buttons.print.min.js")
+		link(rel="stylesheet", href="/stylesheets/jquery-ui-1.12.1.custom/jquery-ui.css")
+		link(rel='stylesheet', href='/stylesheets/style.css')
+		link(rel='stylesheet', href='/stylesheets/3.3.7.css.bootstrap.min.css')
+		link(rel='stylesheet', href='/stylesheets/datatables.min.css')
+		script.
+			$(document).ready(function(){
+				$('.cpf').mask('000.000.000-00');
+				$('.data').mask('00/00/0000');
+				$('.telefone').mask('(00) 00000-0000');
+				$('.saram').mask('0000000');
+				$('.dropdown-toggle').dropdown();
+			});
+	block content
+
+
