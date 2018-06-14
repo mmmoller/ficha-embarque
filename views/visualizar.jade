@@ -1,4 +1,4 @@
-extends layout2
+extends layout
 block content
 	div.container(style="margin-top: 20px")
 		center
@@ -35,6 +35,7 @@ block content
 				thead
 					tr
 						th Data
+						th Trecho
 						th Nome
 						th Identidade
 						th Dependente/Parente
@@ -45,6 +46,7 @@ block content
 						-for (var i = 0; i < cadastros[j].relacao.length; i+=4){
 							tr
 								td #{moment(cadastros[j].data).format("DD/MM/YYYY")}
+								td #{cadastros[j].trecho}
 								td #{cadastros[j].relacao[i]}
 								td #{cadastros[j].relacao[i+1]}
 								td #{cadastros[j].relacao[i+2]}

@@ -19,119 +19,13 @@ html
 				$('.cpf').mask('000.000.000-00');
 				$('.data').mask('00/00/0000');
 				$('.telefone').mask('(00) 00000-0000');
-				$('.dropdown-toggle').dropdown();
 				$('.saram').mask('0000000');
-				$('.valor').mask('#0.00', {reverse: true});
+				$('.dropdown-toggle').dropdown();
 			});
-		
-
-	body.body-background 
+	body.body-background
 		img(src="/img/logo.png", style='width:100%')
-		.botoes-wrapper
-			.botao-header
-				.botao-box.pos-botao-1(text-align: center)
-					.dropdown#dropdown-layout
-						button.btn.btn-link.dropdown-toggle.test(type='button', data-toggle='dropdown', style='color:white')
-							| Recepção
-							span.caret
-						ul.dropdown-menu
-							li
-								a(href='/home/recepcao/checkin') Realizar Check-in
-							li
-								a(href='/home/recepcao/checkin/cancelar') Cancelar Check-in
-							li
-								a(href='/home/recepcao/checkout') Realizar Check-out
-							li
-								a(href='/home/recepcao/estender') Estender estada
-							li
-								a(href='/home/recepcao/mudanca') Realizar Mudança
-							li
-								a(href='/home/recepcao/walkin') Realizar Walk-in
-				.botao-box.pos-botao-2
-					.dropdown
-						button.btn.btn-link.dropdown-toggle.test(type='button', data-toggle='dropdown', style='color:white')
-							| Reserva
-							span.caret
-						ul.dropdown-menu
-							li
-								a(href='/home/reserva') Ver solicitações de reserva
-				.botao-box.pos-botao-3
-					.dropdown
-						button.btn.btn-link.dropdown-toggle.test(type='button', data-toggle='dropdown', style='color:white')
-							| Lavanderia
-							span.caret
-						ul.dropdown-menu
-							li
-								a(href='/home/lavanderia/folha') Preencher folha de coleta e entrega
-							li
-								a(href='/home/lavanderia/lista') Visualizar lista de folhas
-				.botao-box.pos-botao-4
-					.dropdown
-						button.btn.btn-link.dropdown-toggle.test(type='button', data-toggle='dropdown', style='color:white')
-							| Manutenção
-							span.caret
-						ul.dropdown-menu
-							li
-								a(href='/home/manutencao/quadro') Visualizar quadro de manutenções
-							li
-								a(href='/home/manutencao/limpeza') Visualizar quadro de limpeza
-				.botao-box.pos-botao-5
-					.dropdown
-						button.btn.btn-link.dropdown-toggle.test(type='button', data-toggle='dropdown', style='color:white')
-							| Financeiro
-							span.caret
-						ul.dropdown-menu
-							li
-								a(href='/home/financeiro/blacklist') Blacklist
-							li
-								a(href='/home/financeiro/pagamento') Analisar pagamentos
-							li
-								a(href='/home/financeiro/alterar') Alterar diárias e regras
-				.botao-box.pos-botao-6
-					.dropdown
-						button.btn.btn-link.dropdown-toggle.test(type='button', data-toggle='dropdown', style='color:white')
-							| Gerência
-							span.caret
-						ul.dropdown-menu
-							li
-								a(href='/home/gerente/permissao') Gerenciar permissões de usuários
-							li
-								a(href='/home/gerente/registrar/usuario') Registrar usuário
-							li
-								a(href='/home/gerente/remover/usuario') Remover usuário
-							li
-								a(href='/home/gerente/alterar/leito') Alterar leitos
-				.botao-box.pos-botao-7
-					.dropdown
-						button.btn.btn-link.dropdown-toggle.test(type='button', data-toggle='dropdown', style='color:white')
-							| Informação
-							span.caret
-						ul.dropdown-menu
-							li
-								a(href='/home/informacao/log') Log
-							li
-								a(href='/home/informacao/relatorio') Relatórios
-							li
-								a(href='/home/informacao/registro_geral') Registro Geral
-							li
-								a(href='/home/informacao/cadastro') Hóspedes
-				.botao-box.pos-botao-8
-					.dropdown
-						button.btn.btn-link.dropdown-toggle.test(type='button', data-toggle='dropdown', style='color:white')
-							| Início
-							span.caret
-						ul.dropdown-menu
-							li
-								a(href='/home') Home
-							li
-								a(href='/') Cadastrar
-							li
-								a(href='/home/senha') Trocar senha
-							li
-								a(href='/home/signout') Sair
-		
 	-if ( message != undefined && message.length){
-		div.container
+		div.container(style="margin-top:30px")
 			div.row
 				center
 					if ( message.toString().charAt(0) == '!')
@@ -140,7 +34,5 @@ html
 						div.alert.alert-success #{message}
 	-}
 	block content
-	
-
 
 

@@ -1,4 +1,4 @@
-extends layout2
+extends layout
 block content
 	div.container(style="margin-top: 20px")
 		center
@@ -10,6 +10,7 @@ block content
 				"language": {
 					"emptyTable": "Nenhuma ficha de embarque"
 				},
+				"ordering": false,
 			} );
 		});
 	div.container.default-table-wrapper
@@ -19,9 +20,10 @@ block content
 					tr
 						th Data
 						th Responsável
-						th Cracha
-						th Divisao
-						th Trecho
+						th Cracha / Nome
+						th Divisao / Identidade
+						th Trecho / Grau
+						th Número de dependentes / Motivo
 						th Autorizar
 						th Rejeitar
 				tbody
@@ -31,30 +33,38 @@ block content
 						td #{cadastros[j].cracha}
 						td #{cadastros[j].divisao}
 						td #{cadastros[j].trecho}
+						td #{(cadastros[j].relacao.length)/4}
 						td
 							form(class='form-signin', action='/autorizar', method='POST')
 								input(type='hidden', name='_id', value=cadastros[j]._id)
 								input(type='hidden', name='tipo', value="autorizada")
-								button(class='btn btn-lg btn-primary btn-block', type='submit') Autorizar
+								input(type='hidden', name='data', value=cadastros[j].data)
+								input(type='hidden', name='trecho', value=cadastros[j].trecho)
+								button(class='btn btn-primary', type='submit') Autorizar
 						td
 							form(class='form-signin', action='/autorizar', method='POST')
 								input(type='hidden', name='_id', value=cadastros[j]._id)
 								input(type='hidden', name='tipo', value="rejeitada")
-								button(class='btn btn-lg btn-primary btn-block', type='submit') Rejeitar
+								button(class='btn btn-danger', type='submit') Rejeitar
 						-for (var i = 0; i < cadastros[j].relacao.length; i+=4){
 							tr
 								td #{moment(cadastros[j].data).format("DD/MM/YYYY")}
-								td
-									| Responsável: #{cadastros[j].nome}
+								td #{cadastros[j].nome}
+								td #{cadastros[j].relacao[i]}
+								td #{cadastros[j].relacao[i+1]}
+								td #{cadastros[j].relacao[i+2]}
+								td #{cadastros[j].relacao[i+3]}
 								td 
-									| Nome: #{cadastros[j].relacao[i]}
 								td 
-									| Identidade: #{cadastros[j].relacao[i+1]}
-								td 
-									| Dependente/Parent: #{cadastros[j].relacao[i+2]}
-								td 
-									| Motivo: #{cadastros[j].relacao[i+3]}
-								td
 						-}
+						tr
+							td -------
+							td -------
+							td -------
+							td -------
+							td -------
+							td -------
+							td -------
+							td -------
 					-}
 		

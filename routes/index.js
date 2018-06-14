@@ -85,20 +85,45 @@ module.exports = function(passport){ // Rotas
 			if (err) return handleError(err,req,res);
 			if (cadastro){
 				if (req.param("tipo") == "autorizada"){
-					acceptMail(cadastro);
-					cadastro.estado = "autorizada";
-					req.flash('message', "Solicitação autorizada");
-					cadastro.save(function (err) {
+					
+					
+					Cadastro.find({"data": req.param("data"), "estado": "autorizada", "trecho": req.param("trecho")}, function(err, cadastros) {
+			
 						if (err) return handleError(err,req,res);
+						if (cadastros){
+							var total = 0;
+							for (var i = 0; i < cadastros.length; i++)
+								total+= cadastros[i].relacao.length/4;
+							
+							if (total+cadastro.relacao.length/4 > 30){
+								req.flash('message', "!Já existem mais de 30 dependentes autorizados para esse trecho nessa data!")
+							}
+							else{
+								acceptMail(cadastro);
+								cadastro.estado = "autorizada";
+								req.flash('message', "Solicitação autorizada");
+								cadastro.save(function (err) {
+									if (err) return handleError(err,req,res);
+								});
+							}
+							res.redirect('/autorizar');
+						}
+						else {
+							req.flash('message', "!Não há cadastros no sistema!");
+						}
+						
 					});
+					
+					
 				}
 				else {
 					rejectMail(cadastro);
 					cadastro.remove();
 					req.flash('message', "!Solicitação não autorizada");
+					res.redirect('/autorizar');
 				}
 				
-				res.redirect('/autorizar');
+				
 			}
 			else {
 				req.flash('message', "!Solicitação não existente");
