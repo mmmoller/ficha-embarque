@@ -30,12 +30,12 @@ module.exports = function(passport){ // Rotas
 		newCadastro.relacao = req.param('relacao');
 		newCadastro.estado = "solicitação de reserva";
 		newCadastro.email = req.param('email');
+		console.log(req.param('data'));
 		
 		// Se a data for valida
-		if (moment(newCadastro.data).isValid())
-		){
+		if (moment(newCadastro.data).isValid()){
 			var data = moment(newCadastro.data).format("YYYY-MM-DD");
-			data.hour(0);
+			//data.hour(0);
 			newCadastro.data = data;
 			newCadastro.save(function (err) {
 				if (err) return handleError(err,req,res);
@@ -108,7 +108,7 @@ module.exports = function(passport){ // Rotas
 		});
 	});
 
-	
+	// apenas os autorizados
 	// /VISUALIZAR
 	router.get('/visualizar', function(req, res){
 		
@@ -116,7 +116,7 @@ module.exports = function(passport){ // Rotas
 		if (req.param('data') != undefined && req.param('data')){
 			data = moment(req.param('data')).format("YYYY-MM-DD");
 		}
-		data.hour(0);
+		//data.hour(0);
 		
 		Cadastro.find({"data": data}, function(err, cadastros) {
 			

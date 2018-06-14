@@ -1,0 +1,55 @@
+extends layout2
+block content
+	div.container(style="margin-top: 20px")
+		center
+			div.section-wall
+				h1.section-title Ficha de Embarque
+				form(class='form-signin', action='/visualizar', method='GET')
+					input#from(type='text', name='from' class='form-control', placeholder='Data', autocomplete="off")
+					input#data(type='hidden', name='data', class='form-control')
+					br
+					button(class='btn btn-lg btn-primary btn-block', type='submit') Visualizar
+					span.clearfix
+	script.
+		$( function() {
+			var dateFormat = "dd/mm/yy",
+			from = $( "#from" ).datepicker(
+			{ showOtherMonths: true,
+			selectOtherMonths: true,
+			dateFormat: dateFormat,
+			altField: "#data",
+			altFormat: "yy-mm-dd"
+			});
+		});
+	script.
+		$(document).ready(function() {
+			$('#default-table').DataTable( {
+				"language": {
+					"emptyTable": "Nenhuma ficha de embarque"
+				},
+			} );
+		});
+	div.container.default-table-wrapper
+		center
+			table#default-table.display.compact.cell-border
+				thead
+					tr
+						th Data
+						th Nome
+						th Identidade
+						th Grau de Parentesco
+						th Motivo
+						th Responsável
+				tbody
+					-for (var j = 0; j < cadastros.length; j++){
+						-for (var i = 0; i < cadastros[j].relacao.length; i+=4){
+							tr
+								td #{moment(cadastros[j].data).format("DD/MM/YYYY")}
+								td #{cadastros[j].relacao[i]}
+								td #{cadastros[j].relacao[i+1]}
+								td #{cadastros[j].relacao[i+2]}
+								td #{cadastros[j].relacao[i+3]}
+								td #{cadastros[j].nome}
+						-}
+					-}
+		
