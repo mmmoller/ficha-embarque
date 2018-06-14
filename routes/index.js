@@ -18,11 +18,10 @@ module.exports = function(passport){ // Rotas
 	});
 	
 	router.post('/', function(req, res){
-		
+
 		var newCadastro = new Cadastro();
-		newCadastro.nome = req.param('nome'); 
-		newCadastro.posto = req.param('posto'); 
-		newCadastro.saram = req.param('saram'); 
+		newCadastro.nome = req.param('nome');
+		newCadastro.identidade = req.param('identidade'); 
 		newCadastro.cracha = req.param('cracha'); 
 		newCadastro.divisao = req.param('divisao'); 
 		newCadastro.trecho = req.param('trecho'); 
@@ -47,6 +46,7 @@ module.exports = function(passport){ // Rotas
 			req.flash('message', "!Data invalida");
 			res.redirect('/');
 		}
+		
 	});
 			
 	// /LOGIN
@@ -101,7 +101,7 @@ module.exports = function(passport){ // Rotas
 				res.redirect('/autorizar');
 			}
 			else {
-				req.flash('message', "Solicitação não existente");
+				req.flash('message', "!Solicitação não existente");
 				res.redirect('/autorizar');
 			}
 		
@@ -116,9 +116,8 @@ module.exports = function(passport){ // Rotas
 		if (req.param('data') != undefined && req.param('data')){
 			data = moment(req.param('data')).format("YYYY-MM-DD");
 		}
-		//data.hour(0);
 		
-		Cadastro.find({"data": data}, function(err, cadastros) {
+		Cadastro.find({"data": data, "estado": "autorizada"}, function(err, cadastros) {
 			
 			if (err) return handleError(err,req,res);
 			if (cadastros){
@@ -216,15 +215,12 @@ trecho, data, relacao, estado, email){
 
 function acceptMail(cadastro){
 	
-	var text = 'A solicitação de reserva do ' + cadastro.posto
-	+ " " + cadastro.name_guerra + " foi realizada com sucesso." + 
-	" A hospedagem será no leito " + cadastro.leito + " do dia " +
-	moment(cadastro.dateIn).format("DD/MM/YYYY") + " ao dia " +
-	moment(cadastro.dateOut).format("DD/MM/YYYY") + "." +
+	var text = 'A solicitação de embarque do(a) ' + cadastro.posto
+	+ " " + cadastro.nome + " foi realizada com sucesso." +
 	"\n\n\nEssa mensagem é gerada automaticamente pelo sistema. O sistema ainda está em fase de teste.";
 	
 	var mailOptions = {
-		from: 'hotel.icea@gmail.com',
+		from: 'fichaembarque@gmail.com',
 		to: cadastro.email,
 		subject: 'Solicitação de reserva confirmada',
 		text: text
@@ -241,12 +237,12 @@ function acceptMail(cadastro){
 
 function rejectMail(cadastro){
 	
-	var text = 'A solicitação de reserva do ' + cadastro.posto + " " + cadastro.name_guerra +
-	" foi rejeitada pelo seguinte motivo: " + "banana" + "." + 
+	var text = 'A solicitação de embarque do(a) ' + cadastro.posto + " " + cadastro.nome +
+	" foi rejeitada." + 
 	"\n\n\nEssa mensagem é gerada automaticamente pelo sistema. O sistema ainda está em fase de teste.";
 	
 	var mailOptions = {
-		from: 'hotel.icea@gmail.com',
+		from: 'fichaembarque@gmail.com',
 		to: cadastro.email,
 		subject: 'Solicitação de reserva rejeitada',
 		text: text
@@ -289,7 +285,7 @@ var createHash = function(password){
 var transporter = nodemailer.createTransport({
 	service: 'gmail',
 	auth: {
-		user: 'hotel.icea@gmail.com',
+		user: 'fichaembarque@gmail.com',
 		pass: 'Senha123'
 	}
 });

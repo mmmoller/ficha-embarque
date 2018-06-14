@@ -1,0 +1,60 @@
+extends layout2
+block content
+	div.container(style="margin-top: 20px")
+		center
+			div.section-wall
+				h1.section-title Ficha de Embarque
+	script.
+		$(document).ready(function() {
+			$('#default-table').DataTable( {
+				"language": {
+					"emptyTable": "Nenhuma ficha de embarque"
+				},
+			} );
+		});
+	div.container.default-table-wrapper
+		center
+			table#default-table.display.compact.cell-border
+				thead
+					tr
+						th Data
+						th Responsável
+						th Cracha
+						th Divisao
+						th Trecho
+						th Autorizar
+						th Rejeitar
+				tbody
+					-for (var j = 0; j < cadastros.length; j++){
+						td #{moment(cadastros[j].data).format("DD/MM/YYYY")}
+						td #{cadastros[j].nome}
+						td #{cadastros[j].cracha}
+						td #{cadastros[j].divisao}
+						td #{cadastros[j].trecho}
+						td
+							form(class='form-signin', action='/autorizar', method='POST')
+								input(type='hidden', name='_id', value=cadastros[j]._id)
+								input(type='hidden', name='tipo', value="autorizada")
+								button(class='btn btn-lg btn-primary btn-block', type='submit') Autorizar
+						td
+							form(class='form-signin', action='/autorizar', method='POST')
+								input(type='hidden', name='_id', value=cadastros[j]._id)
+								input(type='hidden', name='tipo', value="rejeitada")
+								button(class='btn btn-lg btn-primary btn-block', type='submit') Rejeitar
+						-for (var i = 0; i < cadastros[j].relacao.length; i+=4){
+							tr
+								td #{moment(cadastros[j].data).format("DD/MM/YYYY")}
+								td
+									| Responsável: #{cadastros[j].nome}
+								td 
+									| Nome: #{cadastros[j].relacao[i]}
+								td 
+									| Identidade: #{cadastros[j].relacao[i+1]}
+								td 
+									| Dependente/Parent: #{cadastros[j].relacao[i+2]}
+								td 
+									| Motivo: #{cadastros[j].relacao[i+3]}
+								td
+						-}
+					-}
+		

@@ -70,6 +70,22 @@ body {
 	font-size: 12px;
 }
 
+.default-table{
+	width: 100%;
+}
+
+.default-table th, .default-table td{
+	text-align: center;
+	padding: 5px 5px 5px 5px;
+	font-size: 15px;
+}
+
+.default-table2 th, .default-table2 td{
+	text-align: center;
+	padding: 5px 5px 5px 5px;
+	font-size: 15px;
+}
+
 #register-table{
     margin-bottom: 68px; 
 }

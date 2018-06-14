@@ -11,22 +11,92 @@ block content
 			altFormat: "yy-mm-dd"
 			});
 		});
-		var index = 1;
-		function() createRow{
-			var table = document.getElementById("myTable");
-			var myTd;
-			var myInput;
-			var myTr = document.createElement('tr');
-			var myTd = document.createElement('td');
-			var myInput = document.createElement(input(type='text', name='test', value="banana"));
-			myTd.appendChild(myInput);
-			myTr.appendChild(myTd);
-			table.appendChild(myTr);
+		var index = 4;
+		function createRow(){
+			if (index < 20){
+				var table = document.getElementById("myTable");
+				var tbody = document.getElementById("myTBody")
+				var tr = document.createElement('tr');
+				
+				var td = document.createElement('td');
+				td.setAttribute("colspan", "2")
+				input = document.createElement("input");
+				input.setAttribute("type", "text")
+				input.setAttribute("name", "relacao")
+				input.setAttribute("class", "form-control")
+				input.setAttribute("size", "100")
+				input.setAttribute("required", "")
+				
+				td.appendChild(input);
+				tr.appendChild(td);
+				
+				
+				var td2 = document.createElement('td')
+				td2.setAttribute("colspan", "1")
+				var input2 = document.createElement("input")
+				input2.setAttribute("type", "text")
+				input2.setAttribute("name", "relacao")
+				input2.setAttribute("class", "form-control")
+				input2.setAttribute("size", "50")
+				input2.setAttribute("required", "")
+				
+				td2.appendChild(input2);
+				tr.appendChild(td2)
+				
+				
+				var td3 = document.createElement('td')
+				td3.setAttribute("colspan", "1")
+				var input3 = document.createElement("input")
+				input3.setAttribute("type", "text")
+				input3.setAttribute("name", "relacao")
+				input3.setAttribute("class", "form-control")
+				input3.setAttribute("size", "50")
+				input3.setAttribute("required", "")
+				
+				td3.appendChild(input3);
+				tr.appendChild(td3)
+				
+				
+				var td4 = document.createElement('td')
+				td4.setAttribute("colspan", "2")
+				var input4 = document.createElement("input")
+				input4.setAttribute("type", "text")
+				input4.setAttribute("name", "relacao")
+				input4.setAttribute("class", "form-control")
+				input4.setAttribute("size", "50")
+				input4.setAttribute("required", "")
+				
+				td4.appendChild(input4);
+				tr.appendChild(td4)
+				
+				var td5 = document.createElement('td')
+				td5.setAttribute("colspan", "1")
+				var input5 = document.createElement("input")
+				input5.setAttribute("type", "button")
+				input5.setAttribute("class", "form-control")
+				input5.setAttribute("onclick", "deleteRow(this)")
+				input5.setAttribute("value", "X")
+				input5.setAttribute("class", "btn")
+				input5.setAttribute("class", "btn-danger")
+				
+				td5.appendChild(input5);
+				tr.appendChild(td5)
+				
+				tbody.appendChild(tr)
+				//table.appendChild(tbody);
+				
+				index+=4;
+			}
+		}
+		function deleteRow(r) {
+			var i = r.parentNode.parentNode.rowIndex;
+			document.getElementById("myTable").deleteRow(i);
+			index-=4;
 		}
 	form(action='/', method='POST')
 		div.container.default-table-wrapper
 			center
-				table#folha-ce-table.table-striped.table-bordered
+				table.default-table.table-striped.table-bordered
 					tbody
 						tr
 							td(colspan="6")
@@ -54,16 +124,16 @@ block content
 						tr
 							td(colspan="1")
 								.radio-inline
-									input(type='radio', name='solicitante', value='SLZ-AK', checked='çhecked')
+									input(type='radio', name='trecho', value='SLZ-AK', checked='çhecked')
 									| São Luís -> Alcântara
 							td(colspan="1")
 								.radio-inline
-									input(type='radio', name='solicitante', value='AK-SLZ')
+									input(type='radio', name='trecho', value='AK-SLZ')
 									| Alcântara -> São Luís
 							td(colspan="2")
 								div.input-group
 									span.input-group-addon Data
-									input#from(type='text', name='from' class='form-control', placeholder='Data', autocomplete="off", size="500")
+									input#from(type='text', name='from' class='form-control', placeholder='Data', autocomplete="off", size="500", required)
 									input#data(type='hidden', name='data', class='form-control')
 							td(colspan="2")
 								div.input-group
@@ -71,11 +141,11 @@ block content
 									input(type='email', name='email', class = 'form-control', size="500", required)
 		div.container.default-table-wrapper
 			center
-				table#myTable.table-striped.table-bordered
-					tbody
+				table#myTable.table-striped.table-bordered.default-table
+					tbody#myTBody
 						tr
-							td(colspan="6")
-								label Relação das pessoas que necessitarão embarcar
+							td(colspan="7")
+								label Relação das pessoas que necessitarão embarcar (max. 5)
 						tr
 							td(colspan="2")
 								label Nome
@@ -85,25 +155,23 @@ block content
 								label Dependente/Parente
 							td(colspan="2")
 								label Motivo
-						-for (var j = 0; j < 5; j++){
-							tr
-								td(colspan="2")
-									input(type='text', name='relacao[j]', class = 'form-control', size="100")
-								td(colspan="1")
-									input(type='text', name='relacao[j+1]', class = 'form-control', size="50")
-								td(colspan="1")
-									.radio-inline
-										input(type='radio', name='relacao[#{j+2}]', value='sim')
-										| Sim
-									.radio-inline
-										input(type='radio', name='relacao[#{j+2}]', value='nao')
-										| Não
-								td(colspan="2")
-									input(type='text', name='relacao[j+3]', class = 'form-control', size="50")
-						-}
+							td(colspan="1")
+								input.btn.btn-primary.form-control(type='button', value='+', onclick='createRow()')
+						tr
+							td(colspan="2")
+								input(type='text', name='relacao', class = 'form-control', size="100", required)
+							td(colspan="1")
+								input(type='text', name='relacao', class = 'form-control', size="50", required)
+							td(colspan="1")
+								input(type='text', name='relacao', class = 'form-control', size="50", required)
+							td(colspan="2")
+								input(type='text', name='relacao', class = 'form-control', size="50", required)
+							td(coldspan="1")
+								
+								
 		div.container.default-table-wrapper
 			center
-				table#folha-ce-table.table-striped.table-bordered
+				table.default-table.table-striped.table-bordered
 					tbody
 						tr
 							td(colspan="3")
@@ -113,7 +181,7 @@ block content
 								button(class='btn btn-lg btn-primary btn-block', type='submit') Enviar requisição
 		div.container.default-table-wrapper
 			center
-				table#folha-ce-table.table-striped.table-bordered
+				table.default-table.table-striped.table-bordered
 					tbody
 						tr
 							td(colspan="6")

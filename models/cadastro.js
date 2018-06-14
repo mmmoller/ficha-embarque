@@ -2,8 +2,7 @@ var mongoose = require('mongoose');
 
 module.exports = mongoose.model('Cadastro',{
 	nome: String,
-	posto: String,
-	saram: String,
+	identidade: String,
 	cracha: String,
 	divisao: String,
 	trecho: String,
