@@ -1,0 +1,79 @@
+extends layout
+block content
+	div.container(style="margin-top: 20px")
+		center
+			div.section-wall
+				h1.section-title Fichas de Embarque aguardando autorização
+	script.
+		$(document).ready(function() {
+			$('#default-table').DataTable( {
+				"language": {
+					"emptyTable": "Nenhuma ficha de embarque"
+				},
+				"ordering": false,
+				"paging": false,
+			} );
+		});
+
+	div.container.default-table-wrapper
+		center
+			table#default-table.display.compact.cell-border.table-striped.table-bordered.default-table
+				thead
+					tr
+						th Data
+						th Tipo
+						th Nome Responsável
+						th Nome Dependente / Cracha
+						th Identidade / Divisao
+						th Grau de Parentesco / Trecho
+						th Motivo / Nº de Dependentes
+						th Observação
+						th Autorização
+				tbody
+					-for (var j = 0; j < cadastros.length; j++){
+						tr
+							td --------
+							form(action='/autorizar', method='POST')
+								td ------
+								td ------
+								td ------
+								td ------
+								td ------
+								td ------
+								td ------
+								td
+								tr
+									td #{moment(cadastros[j].data).format("DD/MM/YYYY")}
+									td
+										strong RESPONSÁVEL
+									td #{cadastros[j].nome}
+									td #{cadastros[j].cracha}
+									td #{cadastros[j].divisao}
+									td #{cadastros[j].trecho}
+									td #{(cadastros[j].relacao.length)/4}
+									td #{cadastros[j].observacao}
+									td
+										input(type='hidden', name='_id', value=cadastros[j]._id)
+										input(type='hidden', name='data', value=cadastros[j].data)
+										input(type='hidden', name='trecho', value=cadastros[j].trecho)
+										button(class='btn btn-primary', type='submit') Confirmar
+								-for (var i = 0; i < cadastros[j].relacao.length; i+=4){
+									tr
+										td #{moment(cadastros[j].data).format("DD/MM/YYYY")}
+										td
+											strong DEPENDENTE Nº #{i/4+1}
+										td #{cadastros[j].nome}
+										td #{cadastros[j].relacao[i]}
+										td #{cadastros[j].relacao[i+1]}
+										td #{cadastros[j].relacao[i+2]}
+										td #{cadastros[j].relacao[i+3]}
+										td 
+											input.form-control(type='text', name='observacao', placeholder='Observação opcional')
+										td 
+											select(name='autorizacao', class = 'form-control')
+												option(value = 'sim') Autorizado
+												option(value = 'nao') Não-Autorizado
+								-}
+								
+					-}
+		

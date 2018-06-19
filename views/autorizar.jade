@@ -11,60 +11,112 @@ block content
 					"emptyTable": "Nenhuma ficha de embarque"
 				},
 				"ordering": false,
+				"paging": false,
 			} );
 		});
+
 	div.container.default-table-wrapper
 		center
 			table#default-table.display.compact.cell-border
 				thead
 					tr
 						th Data
-						th Responsável
-						th Cracha / Nome
-						th Divisao / Identidade
-						th Trecho / Grau
-						th Número de dependentes / Motivo
-						th Autorizar
-						th Rejeitar
+						th Nome do Responsável
+						th Info
+						th Info Responsável
+						th Info Dependente Nº1
+						th Info Dependente Nº2
+						th Info Dependente Nº3
+						th Info Dependente Nº4
+						th Info Dependente Nº5
+						th Autorização
 				tbody
 					-for (var j = 0; j < cadastros.length; j++){
-						td #{moment(cadastros[j].data).format("DD/MM/YYYY")}
-						td #{cadastros[j].nome}
-						td #{cadastros[j].cracha}
-						td #{cadastros[j].divisao}
-						td #{cadastros[j].trecho}
-						td #{(cadastros[j].relacao.length)/4}
-						td
-							form(class='form-signin', action='/autorizar', method='POST')
-								input(type='hidden', name='_id', value=cadastros[j]._id)
-								input(type='hidden', name='tipo', value="autorizada")
-								input(type='hidden', name='data', value=cadastros[j].data)
-								input(type='hidden', name='trecho', value=cadastros[j].trecho)
-								button(class='btn btn-primary', type='submit') Autorizar
-						td
-							form(class='form-signin', action='/autorizar', method='POST')
-								input(type='hidden', name='_id', value=cadastros[j]._id)
-								input(type='hidden', name='tipo', value="rejeitada")
-								button(class='btn btn-danger', type='submit') Rejeitar
-						-for (var i = 0; i < cadastros[j].relacao.length; i+=4){
-							tr
+						tr
+							td #{moment(cadastros[j].data).format("DD/MM/YYYY")}
+							td #{cadastros[j].nome}
+							td 
+								strong Nome
+							td #{cadastros[j].nome}
+							- for (var i = 0; i < 5; i++){
+								if (cadastros[j].relacao.length >= (i+1)*4)
+									td #{cadastros[j].relacao[i*4]}
+								else
+									td -
+							- }
+							td -
+						tr
+							td #{moment(cadastros[j].data).format("DD/MM/YYYY")}
+							td #{cadastros[j].nome}
+							td 
+								strong Cracha / Identidade
+							td #{cadastros[j].cracha}
+							- for (var i = 0; i < 5; i++){
+								if (cadastros[j].relacao.length >= (i+1)*4)
+									td #{cadastros[j].relacao[i*4+1]}
+								else
+									td -
+							- }
+							td -
+						tr
+							td #{moment(cadastros[j].data).format("DD/MM/YYYY")}
+							td #{cadastros[j].nome}
+							td 
+								strong Divisão / Grau de Parentesco
+							td #{cadastros[j].divisao}
+							- for (var i = 0; i < 5; i++){
+								if (cadastros[j].relacao.length >= (i+1)*4)
+									td #{cadastros[j].relacao[i*4+2]}
+								else
+									td -
+							- }
+							td -
+						tr
+							td #{moment(cadastros[j].data).format("DD/MM/YYYY")}
+							td #{cadastros[j].nome}
+							td
+								strong Trecho / Motivo
+							td #{cadastros[j].trecho}
+							- for (var i = 0; i < 5; i++){
+								if (cadastros[j].relacao.length >= (i+1)*4)
+									td #{cadastros[j].relacao[i*4+3]}
+								else
+									td -
+							- }
+							td -
+							
+						tr
+							form(action='/autorizar', method='POST')
 								td #{moment(cadastros[j].data).format("DD/MM/YYYY")}
 								td #{cadastros[j].nome}
-								td #{cadastros[j].relacao[i]}
-								td #{cadastros[j].relacao[i+1]}
-								td #{cadastros[j].relacao[i+2]}
-								td #{cadastros[j].relacao[i+3]}
-								td 
-								td 
-						-}
+								td
+									strong Autorização
+								td
+									input.form-control(type='text', name='observacao', placeholder='Observação opcional')
+								- for (var i = 0; i < 5; i++){
+									if (cadastros[j].relacao.length >= (i+1)*4)
+										td
+											select(name='autorizacao', class = 'form-control')
+												option(value = 'sim') Autorizado
+												option(value = 'nao') Não-Autorizado
+									else
+										td -
+								- }
+								td
+									input(type='hidden', name='_id', value=cadastros[j]._id)
+									input(type='hidden', name='data', value=cadastros[j].data)
+									input(type='hidden', name='trecho', value=cadastros[j].trecho)
+									button(class='btn btn-primary', type='submit') Confirmar
 						tr
-							td -------
-							td -------
-							td -------
-							td -------
-							td -------
-							td -------
-							td -------
-							td -------
+							td ---------
+							td ---------
+							td ---------
+							td ---------
+							td ---------
+							td ---------
+							td ---------
+							td ---------
+							td ---------
+							td ---------
 					-}
 		

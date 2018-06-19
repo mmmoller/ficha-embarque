@@ -34,6 +34,7 @@ block content
 			table#default-table.display.compact.cell-border
 				thead
 					tr
+						th Número do passageiro
 						th Data
 						th Trecho
 						th Nome
@@ -42,9 +43,10 @@ block content
 						th Motivo
 						th Responsável
 				tbody
-					-for (var j = 0; j < cadastros.length; j++){
-						-for (var i = 0; i < cadastros[j].relacao.length; i+=4){
+					-for (var j = 0, index = 1; j < cadastros.length; j++){
+						-for (var i = 0; i < cadastros[j].relacao.length; i+=4, index++){
 							tr
+								td #{index}
 								td #{moment(cadastros[j].data).format("DD/MM/YYYY")}
 								td #{cadastros[j].trecho}
 								td #{cadastros[j].relacao[i]}

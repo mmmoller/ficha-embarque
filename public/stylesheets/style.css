@@ -51,7 +51,7 @@ body {
 }
 
 .default-table2 th, .default-table2 td{
-	text-align: center;
+	text-align: right;
 	padding: 5px 5px 5px 5px;
 	font-size: 15px;
 }

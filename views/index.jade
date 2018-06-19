@@ -139,6 +139,11 @@ block content
 								div.input-group
 									span.input-group-addon Email
 									input(type='email', name='email', class = 'form-control', size="500", required)
+						tr
+							td(colspan="6")
+								div.input-group
+									span.input-group-addon Observação opcional
+									input(type='text', name='observacao', class = 'form-control', size="500")
 		div.container.default-table-wrapper
 			center
 				table#myTable.table-striped.table-bordered.default-table
@@ -156,7 +161,7 @@ block content
 							td(colspan="2")
 								label Motivo
 							td(colspan="1")
-								input.btn.btn-primary.form-control(type='button', value='+', onclick='createRow()')
+								label Adicionar/Remover
 						tr
 							td(colspan="2")
 								input(type='text', name='relacao', class = 'form-control', size="100", required)
@@ -167,7 +172,7 @@ block content
 							td(colspan="2")
 								input(type='text', name='relacao', class = 'form-control', size="50", required)
 							td(coldspan="1")
-								
+								input.btn.btn-primary(type='button', value='+', onclick='createRow()')
 								
 		div.container.default-table-wrapper
 			center
@@ -177,8 +182,14 @@ block content
 							td(colspan="3")
 								input(type='checkbox', name='termo', checked=false, style="width: 15px; height: 15px;", required)
 								|  Declaro que estou de acordo com o termo de responsabilidade abaixo
+						tr
 							td(colspan="3")
-								button(class='btn btn-lg btn-primary btn-block', type='submit') Enviar requisição
+								input(type='checkbox', name='traje', checked=false, style="width: 15px; height: 15px;", required)
+								|  Declaro que estou ciente dos   
+								a(href='/trajes', target="blank") trajes permitidos
+						tr
+							td(colspan="3")
+								button(class='btn btn-lg btn-primary', type='submit') Enviar requisição
 		div.container.default-table-wrapper
 			center
 				table.default-table.table-striped.table-bordered
@@ -188,13 +199,13 @@ block content
 								label Termo de Responsabilidade
 						tr
 							td
-								p
+								p(style="text-align: justify")
 									| Declaro, para  todos  os  fins,  que  compreendo  e  aceito  os  riscos  decorrentes  da  travessia  da  Baía  de  São Marcos, para todos  os passageiros ora solicitados para embarque, pois tenho conhecimento das dificuldades de navegabilidade  em  razão  da  maré abrupta e intempestiva, da natureza de mar aberto, dos fortes ventos e da existência de toda sorte de vida marinha, além do risco de queda durante o embarque ou desembarque.
-								p
+								p(style="text-align: justify")
 									| Compreendo que a embarcação é de propriedade do Grupamento de Apoio de Alcântara e utilizada para o transporte (SL/AK/SL) exclusivo do  efetivo  (militares,  civis  e  dependentes)  do  GAP-AK/CLA,  sendo operada por mestres e marinheiros do  GAP-AK/CLA, treinados e autorizados pela Capitania dos Portos do Maranhão.
-								p
+								p(style="text-align: justify")
 									| Reconheço que o respectivo transporte é mera liberalidade da Chefia do GAP-AK, e, por inexistir qualquer contraprestação, caracteriza- se como transporte de cortesia, regrado pelo art. 736 do Código Civil Brasileiro. Portanto, há isenção de qualquer responsabilização objetiva por parte do GAP-AK.
-								p
+								p(style="text-align: justify")
 									| Por fim, declaro ter ciência de que o GAP-AK, sua diretoria e/ou funcionários e/ou prepostos, 
 									strong não se responsabilizam 
 									| (civil ou criminalmente) 
@@ -203,4 +214,39 @@ block content
 									strong ou material 
 									| (perda ou dano total ou parcial de objetos e pertencentes) 
 									strong ocorridos a bordo da embarcação.
-		
+		div.container.default-table-wrapper
+			center
+				table.default-table.table-striped.table-bordered
+					tbody
+						tr
+							td
+								p(style="text-align: justify")
+									strong OBS1: 
+									| Atentar para a ordem de embarque prevista na 
+									strong NPA-GAP-AK-002
+									|, obedecendo às respectivas prioridades.
+						tr
+							td
+								p(style="text-align: justify")
+									strong OBS2: 
+									| Atentar para o horário de embarque, devendo chegar com, no mínimo, 20 min de antecedência.
+						tr
+							td
+								p(style="text-align: justify")
+									strong OBS3: 
+									| Atentar para o vestuário adequado (calça, camisa com manga e sapato fechado).
+						tr
+							td
+								p(style="text-align: justify")
+									strong OBS4: 
+									| O militar/servidor do efetivo do GAP/CLA ao preencher essa ficha solicitando o embarque de pessoas que não sejam seus dependentes legais, deverá acompanhar o(s) passageiro(s), alvo da solicitação, durante todo o trajeto, caso o transporte seja autorizado.
+						tr
+							td
+								p(style="text-align: justify")
+									strong OBS5: 
+									| Esta autorização se limita apenas ao embarque nas lanchas do GAP-AK, portanto, não autoriza o embarque nas viaturas.
+						tr
+							td
+								p(style="text-align: justify")
+									strong OBS6: 
+									| A requisição deve ser solicitada até o último expediente útil antes do dia que se necessita embarcar.

@@ -29,6 +29,7 @@ module.exports = function(passport){ // Rotas
 		newCadastro.relacao = req.param('relacao');
 		newCadastro.estado = "solicitação de reserva";
 		newCadastro.email = req.param('email');
+		newCadastro.observacao = req.param('observacao');
 		console.log(req.param('data'));
 		
 		// Se a data for valida
@@ -84,46 +85,58 @@ module.exports = function(passport){ // Rotas
 		Cadastro.findOne({_id: req.param('_id')},function(err, cadastro){
 			if (err) return handleError(err,req,res);
 			if (cadastro){
-				if (req.param("tipo") == "autorizada"){
-					
-					
-					Cadastro.find({"data": req.param("data"), "estado": "autorizada", "trecho": req.param("trecho")}, function(err, cadastros) {
-			
-						if (err) return handleError(err,req,res);
-						if (cadastros){
-							var total = 0;
-							for (var i = 0; i < cadastros.length; i++)
-								total+= cadastros[i].relacao.length/4;
-							
-							if (total+cadastro.relacao.length/4 > 30){
-								req.flash('message', "!Já existem mais de 30 dependentes autorizados para esse trecho nessa data!")
-							}
-							else{
-								acceptMail(cadastro);
-								cadastro.estado = "autorizada";
-								req.flash('message', "Solicitação autorizada");
-								cadastro.save(function (err) {
-									if (err) return handleError(err,req,res);
-								});
-							}
-							res.redirect('/autorizar');
-						}
-						else {
-							req.flash('message', "!Não há cadastros no sistema!");
-						}
+				
+				var autorizacao = [];
+				autorizacao = req.param("autorizacao");
+				motivo = req.param("observacao");
+				console.log(autorizacao)
+				console.log(motivo);
+				
+				var text = "";
+				
+				for (var i = 0, j = 0; i < cadastro.relacao.length/4; i++, j++){
+					text+= "Dependente " + cadastro.relacao[i*4]
+					if (autorizacao[j] == "sim"){
+						text+= " foi AUTORIZADO. \n";
+					}
+					else {
+						text+= " NÃO foi autorizado. \n"
+						cadastro.relacao.splice(i*4, 4);
+						i--;
+					}
+				}
+				if (motivo){
+					text+="\n\nMotivo: " + motivo;
+				}
+				
+				Cadastro.find({"data": req.param("data"), "estado": "autorizada", "trecho": req.param("trecho")}, function(err, cadastros) {
+		
+					if (err) return handleError(err,req,res);
+					if (cadastros){
+						var total = 0;
+						for (var i = 0; i < cadastros.length; i++)
+							total+= cadastros[i].relacao.length/4;
 						
-					});
+						if (total+cadastro.relacao.length/4 > 30){
+							req.flash('message', "!Já existem mais de 30 dependentes autorizados para esse trecho nessa data!")
+						}
+						else{
+							acceptMail(cadastro, text);
+							cadastro.estado = "autorizada";
+							req.flash('message', "Solicitação confirmada");
+							cadastro.save(function (err) {
+								if (err) return handleError(err,req,res);
+							});
+							if (cadastro.relacao.length == 0)
+								cadastro.remove();
+						}
+						res.redirect('/autorizar');
+					}
+					else {
+						req.flash('message', "!Não há cadastros no sistema!");
+					}
 					
-					
-				}
-				else {
-					rejectMail(cadastro);
-					cadastro.remove();
-					req.flash('message', "!Solicitação não autorizada");
-					res.redirect('/autorizar');
-				}
-				
-				
+				});
 			}
 			else {
 				req.flash('message', "!Solicitação não existente");
@@ -171,8 +184,16 @@ module.exports = function(passport){ // Rotas
 	// CRIAR
 	router.get('/criar', function(req,res){
 		BDAdmin();
-		//BDPopulate();
+		BDPopulate();
 		res.send("Criado");
+	});
+	
+	router.get('/repopulate', function(req,res){
+		Cadastro.remove({}, function(err) { 
+			console.log('Cadastros removed')
+		});
+		BDPopulate();
+		res.redirect('/autorizar');
 	});
 	
 	
@@ -205,50 +226,62 @@ function BDAdmin(req, res){
 }
 
 function BDPopulate(req, res){
-	for (var i = 1; i < 10; i++){
-		createCadastro( "hospede"+i, "guerra"+i, 1111111*i, 111111*i,
-		"unidade"+i, "endereço"+i, 
-		"("+i+i+")"+" "+i+i+i+i+i+"-"+i+i+i+i, 
-		i + "email@email.com", ""+i+i+i+"."+i+i+i+"."+i+i+i+"-"+i+i,
-		moment().format("YYYY-MM-DD"),
-		moment().add(i+1, "days").format("YYYY-MM-DD"),
-		0, "1o Tenente", "curso"+i, "Aluno", "M"
-		);
+	for (var i = 1; i < 5; i++){
+		var rel = [];
+		var trecho = "SLZ-AK";
+		if (i%2 == 0){
+			trecho = "AK-SLZ";
+		}
+		for (var j = 0; j < i*4; j++){
+			if (j%4 == 0){
+				rel[j] = "dependente" + i + "" + j
+			}
+			if (j%4 == 1){
+				rel[j] = "identidade" + i + "" + j
+			}
+			if (j%4 == 2){
+				rel[j] = "grau" + i + "" + j
+			}
+			if (j%4 == 3){
+				rel[j] = "motivo" + i + "" + j
+			}
+		}
+		createCadastro( "responsavel teste"+i, "identidade"+i, "cracha"+i, "divisao"+i,
+		trecho, moment().format("YYYY-MM-DD"), rel, i+"email@email.com", "observacao"+i, req, res);
 	}
 	return
 }
 
-function createCadastro(nome, posto, saram, cracha, divisao, 
-trecho, data, relacao, estado, email){
+function createCadastro(nome, identidade, cracha, divisao, 
+trecho, data, relacao, email, observacao, req, res){
 	var newCadastro = new Cadastro();
 	newCadastro.nome = nome;
-	newCadastro.posto = posto;
-	newCadastro.saram = saram;
+	newCadastro.identidade = identidade;
 	newCadastro.cracha = cracha;
 	newCadastro.divisao = divisao;
 	newCadastro.trecho = trecho;
 	var _data = moment(data).format("YYYY-MM-DD")
-	_data.hour(0);
 	newCadastro.data = _data;
 	newCadastro.relacao = relacao;
 	newCadastro.estado = "solicitação de reserva";
-	newCadastro.email = email; 
+	newCadastro.email = email;
+	newCadastro.observacao = observacao;
 	newCadastro.save(function (err) {
 		if (err) return handleError(err,req,res);
 	});
 }
 
-function acceptMail(cadastro){
+function acceptMail(cadastro, text){
 	
-	var text = 'A solicitação de embarque do(a) ' + cadastro.posto
-	+ " " + cadastro.nome + " foi realizada com sucesso." +
+	var texto = 'A solicitação de embarque do(a) ' + cadastro.nome +
+	" foi avaliada, segue a lista dos dependentes: \n\n" + text +
 	"\n\n\nEssa mensagem é gerada automaticamente pelo sistema. O sistema ainda está em fase de teste.";
 	
 	var mailOptions = {
 		from: 'fichaembarque@gmail.com',
 		to: cadastro.email,
-		subject: 'Solicitação de reserva confirmada',
-		text: text
+		subject: 'Solicitação de reserva de embarque',
+		text: texto
 	};
 
 	transporter.sendMail(mailOptions, function(error, info){
