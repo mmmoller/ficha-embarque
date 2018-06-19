@@ -89,8 +89,7 @@ block content
 							form(action='/autorizar', method='POST')
 								td #{moment(cadastros[j].data).format("DD/MM/YYYY")}
 								td #{cadastros[j].nome}
-								td
-									strong Autorização
+								td #{cadastros[j].observacao}
 								td
 									input.form-control(type='text', name='observacao', placeholder='Observação opcional')
 								- for (var i = 0; i < 5; i++){
