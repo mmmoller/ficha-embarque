@@ -8,6 +8,22 @@ block content
 					input#from(type='text', name='from' class='form-control', placeholder='Data', autocomplete="off")
 					input#data(type='hidden', name='data', class='form-control')
 					br
+					if (trecho == "SLZ-AK")
+						.radio-inline
+							input(type='radio', name='trecho', value='SLZ-AK', checked='çhecked')
+							| SL x AK
+						.radio-inline
+							input(type='radio', name='trecho', value='AK-SLZ')
+							| AK x SL
+					else
+						.radio-inline
+							input(type='radio', name='trecho', value='SLZ-AK')
+							| SL x AK
+						.radio-inline
+							input(type='radio', name='trecho', value='AK-SLZ', checked='')
+							| AK x SL
+					br
+					br
 					button(class='btn btn-lg btn-primary btn-block', type='submit') Visualizar
 					span.clearfix
 	script.
@@ -27,6 +43,8 @@ block content
 				"language": {
 					"emptyTable": "Nenhuma ficha de embarque"
 				},
+				"ordering": false,
+				"paging": false,
 			} );
 		});
 	div.container.default-table-wrapper
@@ -56,4 +74,7 @@ block content
 								td #{cadastros[j].nome}
 						-}
 					-}
+	div(style="margin-bottom: 20px")
+		form(action='/logout', method='GET')
+			button(class='btn btn-danger', type='submit') Sair
 		

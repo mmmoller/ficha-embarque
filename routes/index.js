@@ -51,23 +51,35 @@ module.exports = function(passport){ // Rotas
 	});
 			
 	// /LOGIN
-	router.get('/login', function(req,res){
-		// Se já estiver logado, não precisa logar de novo.
-		if (req.isAuthenticated()){
-			res.redirect('/autorizar')
-		}
-		res.render('login', { message: req.flash('message') });
+	router.get('/login/autorizar', function(req,res){
+		res.render('login', {endereco: "autorizar", message: req.flash('message') });
 	});
 	
-	router.post('/login', passport.authenticate('login', {
+	router.get('/login/visualizar', function(req,res){
+		res.render('login', {endereco: "visualizar", message: req.flash('message') });
+	});
+	
+	router.get('/logout', function(req, res) {
+		req.logout();
+		res.redirect('/');
+	});
+	
+	router.post('/login/autorizar', passport.authenticate('login', {
 		// Autenticação pelo passport.
 		successRedirect: '/autorizar',
-		failureRedirect: '/login',
+		failureRedirect: '/login/autorizar',
 		failureFlash : true
-	})); 
+	}));
+	
+	router.post('/login/visualizar', passport.authenticate('login', {
+		// Autenticação pelo passport.
+		successRedirect: '/visualizar',
+		failureRedirect: '/login/visualizar',
+		failureFlash : true
+	}));
 
 	// /AUTORIZAR
-	router.get('/autorizar', isAuthenticated, function(req, res){
+	router.get('/autorizar', isAuthenticatedAuth, function(req, res){
 		Cadastro.find({'estado': "solicitação de reserva"}, function(err, cadastros) {
 			if (err) return handleError(err,req,res);
 			if (cadastros){
@@ -80,16 +92,25 @@ module.exports = function(passport){ // Rotas
 		});
 	});
 	
-	router.post('/autorizar', isAuthenticated, function(req, res){
+	router.post('/autorizar', isAuthenticatedAuth, function(req, res){
 		
 		Cadastro.findOne({_id: req.param('_id')},function(err, cadastro){
 			if (err) return handleError(err,req,res);
 			if (cadastro){
 				
-				var autorizacao = [];
-				autorizacao = req.param("autorizacao");
+				var autorizacao = {};
+				
+				if (Array.isArray(req.param("autorizacao"))){
+					autorizacao = req.param("autorizacao");
+				}
+				else {
+					autorizacao = [req.param("autorizacao")];
+				}
+				
 				motivo = req.param("observacao");
+				
 				console.log(autorizacao)
+				console.log(autorizacao.length);
 				console.log(motivo);
 				
 				var text = "";
@@ -148,19 +169,24 @@ module.exports = function(passport){ // Rotas
 
 	// apenas os autorizados
 	// /VISUALIZAR
-	router.get('/visualizar', function(req, res){
+	router.get('/visualizar', isAuthenticatedView, function(req, res){
 		
 		var data = moment().format("YYYY-MM-DD");
 		if (req.param('data') != undefined && req.param('data')){
 			data = moment(req.param('data')).format("YYYY-MM-DD");
 		}
 		
-		Cadastro.find({"data": data, "estado": "autorizada"}, function(err, cadastros) {
+		var trecho = "SLZ-AK"
+		if (req.param('trecho') != undefined && req.param('trecho')){
+			trecho = req.param("trecho");
+		}
+		
+		Cadastro.find({"data": data, "estado": "autorizada", "trecho": trecho}, function(err, cadastros) {
 			
 			if (err) return handleError(err,req,res);
 			if (cadastros){
 				
-				res.render("visualizar", {cadastros: cadastros});
+				res.render("visualizar", {trecho: trecho, cadastros: cadastros});
 			}
 			else {
 				req.flash('message', "!Não há");
@@ -184,7 +210,7 @@ module.exports = function(passport){ // Rotas
 	// CRIAR
 	router.get('/criar', function(req,res){
 		BDAdmin();
-		BDPopulate();
+		//BDPopulate();
 		res.send("Criado");
 	});
 	
@@ -222,6 +248,27 @@ function BDAdmin(req, res){
 			if (err) return handleError(err,req,res);
 		});
 	});
+	
+	User.findOne({ 'username' :  'fiscal' }, function(err, user) {
+		if (err){
+			return handleError(err,req,res);
+		}
+		if (user){
+			user.password = createHash('fiscal');
+			user.save(function(err){
+				if (err) return handleError(err,req,res);
+			});
+			return;
+		}
+		var newUser = new User();
+		
+		newUser.username = 'fiscal';
+		newUser.password = createHash('fiscal');
+		newUser.save(function (err) {
+			if (err) return handleError(err,req,res);
+		});
+	});
+	
 	return
 }
 
@@ -330,6 +377,33 @@ var isAuthenticated = function (req, res, next) {
 	// if the user is not authenticated then redirect him to the login page
 	res.redirect('/login');
 }
+
+var isAuthenticatedView = function (req, res, next) {
+	// if user is authenticated in the session, call the next() to call the next request handler 
+	// Passport adds this method to request object. A middleware is allowed to add properties to
+	// request and response objects
+	
+	if (req.isAuthenticated() && (req.user.username == "fiscal" || req.user.username == "admin"))
+		return next();
+	// if the user is not authenticated then redirect him to the login page
+	res.redirect('/login/visualizar');
+}
+
+var isAuthenticatedAuth = function (req, res, next) {
+	// if user is authenticated in the session, call the next() to call the next request handler 
+	// Passport adds this method to request object. A middleware is allowed to add properties to
+	// request and response objects
+	
+	if (req.isAuthenticated() && req.user.username == "admin")
+		return next();
+	if (req.isAuthenticated() && req.user.username == "fiscal"){
+		req.logout();
+		req.flash('message', "!Fiscal não pode autorizar fichas de embarque");
+	}
+	// if the user is not authenticated then redirect him to the login page
+	res.redirect('/login/autorizar');
+}
+
 
 
 }
