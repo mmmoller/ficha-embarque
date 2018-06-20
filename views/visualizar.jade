@@ -45,19 +45,43 @@ block content
 				},
 				"ordering": false,
 				"paging": false,
+				dom: 'lBfrtp',
+				buttons: [
+					{
+						extend: 'print',
+						title: "Ficha de Embarque",
+						customize: function ( win ) {
+							$(win.document.body)
+								.css( 'font-size', '8pt' )
+								.prepend(
+									'<img src="http://datatables.net/media/images/logo-fade.png" style="position:absolute; top:0; left:0;" />'
+								);
+
+							$(win.document.body).find( 'table' )
+								.addClass( 'compact' )
+								.css( 'font-size', 'inherit' )
+								.css( 'page-break-inside', 'auto');
+							
+							$(win.document.body).find( 'tbody:before' )
+								.css( 'line-height', '1em')
+								.css( 'content', '\200c' )
+								.css( 'display', 'block')
+						}
+					}
+				]
 			} );
 		});
-	div.container.default-table-wrapper
+	div.container.default-table-wrapper.section-to-print
 		center
 			table#default-table.display.compact.cell-border
 				thead
 					tr
-						th Número do passageiro
+						th Nº
 						th Data
 						th Trecho
 						th Nome
 						th Identidade
-						th Dependente/Parente
+						th Grau
 						th Motivo
 						th Responsável
 				tbody
