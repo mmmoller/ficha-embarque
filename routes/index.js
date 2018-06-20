@@ -213,7 +213,7 @@ module.exports = function(passport){ // Rotas
 			if (err) return handleError(err,req,res);
 			if (cadastros){
 				
-				res.render("visualizar", {trecho: trecho, cadastros: cadastros});
+				res.render("visualizar", {trecho: trecho, cadastros: cadastros, user: req.user.username});
 			}
 			else {
 				req.flash('message', "!Não há");

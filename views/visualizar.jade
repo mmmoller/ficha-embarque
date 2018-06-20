@@ -98,6 +98,10 @@ block content
 								td #{cadastros[j].nome}
 						-}
 					-}
+	if (user == "admin")
+		div(style="margin-bottom: 20px")
+			form(action='/autorizar', method='GET')
+				button(class='btn btn-primary', type='submit') Autorizar
 	div(style="margin-bottom: 20px")
 		form(action='/logout', method='GET')
 			button(class='btn btn-danger', type='submit') Sair
