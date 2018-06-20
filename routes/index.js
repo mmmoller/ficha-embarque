@@ -41,6 +41,18 @@ module.exports = function(passport){ // Rotas
 				if (err) return handleError(err,req,res);
 			});
 			req.flash('message', "Solicitação realizada com sucesso, aguarde aprovação por e-mail");
+			
+			var text = 'A solicitação de embarque do(a) ' + newCadastro.nome +
+				" foi realizada com sucesso, aguarde aprovação por-email. Segue a lista dos passageiros solicitada: \n\n";
+				
+			for (var i = 0, j = 0; i < newCadastro.relacao.length/4; i++, j++){
+				text+= newCadastro.relacao[i*4] + ". \n"
+			}
+			
+			var subject = "Solicitação de embarque realizada - Aguarde aprovação"
+			
+			acceptMail(newCadastro, text, subject)
+		
 			res.redirect('/');
 		}
 		else {
@@ -113,22 +125,37 @@ module.exports = function(passport){ // Rotas
 				console.log(autorizacao.length);
 				console.log(motivo);
 				
-				var text = "";
+				var text = 'A solicitação de embarque do(a) ' + cadastro.nome +
+				" foi avaliada.\n\n Relação dos passageiros AUTORIZADOS: \n\n";
 				
 				for (var i = 0, j = 0; i < cadastro.relacao.length/4; i++, j++){
-					text+= "Dependente " + cadastro.relacao[i*4]
+					
 					if (autorizacao[j] == "sim"){
-						text+= " foi AUTORIZADO. \n";
+						text+= cadastro.relacao[i*4]
+						text+= " foi AUTORIZADO(A). \n";
 					}
-					else {
-						text+= " NÃO foi autorizado. \n"
+				}
+				
+				text+= "\n Relação dos passageiros NÃO-autorizados: \n\n"
+				
+				for (var i = 0, j = 0; i < cadastro.relacao.length/4; i++, j++){
+					if (autorizacao[j] == "nao"){
+						text+= cadastro.relacao[i*4]
+						text+= " NÃO foi autorizado(a). \n"
 						cadastro.relacao.splice(i*4, 4);
 						i--;
 					}
 				}
+				
+				
+				
+				
+				
 				if (motivo){
 					text+="\n\nMotivo: " + motivo;
 				}
+				
+				var subject = "Solicitação de embarque avaliada";
 				
 				Cadastro.find({"data": req.param("data"), "estado": "autorizada", "trecho": req.param("trecho")}, function(err, cadastros) {
 		
@@ -142,7 +169,7 @@ module.exports = function(passport){ // Rotas
 							req.flash('message', "!Já existem mais de 30 dependentes autorizados para esse trecho nessa data!")
 						}
 						else{
-							acceptMail(cadastro, text);
+							acceptMail(cadastro, text, subject);
 							cadastro.estado = "autorizada";
 							req.flash('message', "Solicitação confirmada");
 							cadastro.save(function (err) {
@@ -318,16 +345,15 @@ trecho, data, relacao, email, observacao, req, res){
 	});
 }
 
-function acceptMail(cadastro, text){
+function acceptMail(cadastro, text, subject){
 	
-	var texto = 'A solicitação de embarque do(a) ' + cadastro.nome +
-	" foi avaliada, segue a lista dos dependentes: \n\n" + text +
-	"\n\n\nEssa mensagem é gerada automaticamente pelo sistema. O sistema ainda está em fase de teste.";
+	var texto = text +
+	"\n\nEssa mensagem é gerada automaticamente pelo sistema. O sistema ainda está em fase de teste.";
 	
 	var mailOptions = {
 		from: 'fichaembarque@gmail.com',
 		to: cadastro.email,
-		subject: 'Solicitação de reserva de embarque',
+		subject: subject,
 		text: texto
 	};
 
