@@ -43,7 +43,8 @@ module.exports = function(passport){ // Rotas
 			req.flash('message', "Solicitação realizada com sucesso, aguarde aprovação por e-mail");
 			
 			var text = 'A solicitação de embarque do(a) ' + newCadastro.nome +
-				" foi realizada com sucesso, aguarde aprovação por-email. Segue a lista dos passageiros solicitada: \n\n";
+				" foi realizada com sucesso para o dia " + moment(newCadastro.data).format("DD/MM/YYYY") + ", no trecho " + newCadastro.trecho +
+				", aguarde aprovação por-email. Segue a lista dos passageiros solicitada: \n\n";
 				
 			for (var i = 0, j = 0; i < newCadastro.relacao.length/4; i++, j++){
 				text+= newCadastro.relacao[i*4] + ". \n"
@@ -125,7 +126,8 @@ module.exports = function(passport){ // Rotas
 				console.log(autorizacao.length);
 				console.log(motivo);
 				
-				var text = 'A solicitação de embarque do(a) ' + cadastro.nome +
+				var text = 'A solicitação de embarque do(a) ' + cadastro.nome + 
+				" no dia " + moment(cadastro.data).format("DD/MM/YYYY") + ", no trecho " + cadastro.trecho +
 				" foi avaliada.\n\n Relação dos passageiros AUTORIZADOS: \n\n";
 				
 				for (var i = 0, j = 0; i < cadastro.relacao.length/4; i++, j++){
