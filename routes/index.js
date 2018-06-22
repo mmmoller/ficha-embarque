@@ -263,7 +263,7 @@ function BDAdmin(req, res){
 			return handleError(err,req,res);
 		}
 		if (user){
-			user.password = createHash('admin');
+			user.password = createHash('casn2018');
 			user.save(function(err){
 				if (err) return handleError(err,req,res);
 			});
@@ -272,7 +272,7 @@ function BDAdmin(req, res){
 		var newUser = new User();
 		
 		newUser.username = 'admin';
-		newUser.password = createHash('admin');
+		newUser.password = createHash('casn2018');
 		newUser.save(function (err) {
 			if (err) return handleError(err,req,res);
 		});
@@ -283,7 +283,7 @@ function BDAdmin(req, res){
 			return handleError(err,req,res);
 		}
 		if (user){
-			user.password = createHash('fiscal');
+			user.password = createHash('Fenix2018');
 			user.save(function(err){
 				if (err) return handleError(err,req,res);
 			});
@@ -292,7 +292,7 @@ function BDAdmin(req, res){
 		var newUser = new User();
 		
 		newUser.username = 'fiscal';
-		newUser.password = createHash('fiscal');
+		newUser.password = createHash('Fenix2018');
 		newUser.save(function (err) {
 			if (err) return handleError(err,req,res);
 		});
