@@ -168,18 +168,22 @@ module.exports = function(passport){ // Rotas
 							total+= cadastros[i].relacao.length/4;
 						
 						if (total+cadastro.relacao.length/4 > 30){
-							req.flash('message', "!Já existem mais de 30 dependentes autorizados para esse trecho nessa data!")
+							var msg = "!Solicitação avaliada com sucesso. Existem " + Number(total+cadastro.relacao.length/4) + " solitações autorizadas para esse trecho nessa data!"
+							req.flash('message', msg)
 						}
 						else{
-							acceptMail(cadastro, text, subject);
-							cadastro.estado = "autorizada";
-							req.flash('message', "Solicitação confirmada");
-							cadastro.save(function (err) {
-								if (err) return handleError(err,req,res);
-							});
-							if (cadastro.relacao.length == 0)
-								cadastro.remove();
+							var msg = "Solicitação avaliada com sucesso. Existem " + Number(total+cadastro.relacao.length/4) + " solitações autorizadas para esse trecho nessa data."
+							req.flash('message', msg);
 						}
+						
+						acceptMail(cadastro, text, subject);
+						cadastro.estado = "autorizada";
+						cadastro.save(function (err) {
+							if (err) return handleError(err,req,res);
+						});
+						if (cadastro.relacao.length == 0)
+							cadastro.remove();
+						
 						res.redirect('/autorizar');
 					}
 					else {
@@ -226,6 +230,7 @@ module.exports = function(passport){ // Rotas
 	});
 
 	// DELETE
+	/*
 	router.get('/delete', function(req, res){
 		User.remove({}, function(err) { 
 			console.log('Users removed')
@@ -234,7 +239,7 @@ module.exports = function(passport){ // Rotas
 			console.log('Cadastros removed')
 		});
 		res.send("Deletado");
-	});
+	});*/
 	
 	// CRIAR
 	router.get('/criar', function(req,res){
@@ -243,13 +248,15 @@ module.exports = function(passport){ // Rotas
 		res.send("Criado");
 	});
 	
+	// REPOPULATE
+	/*
 	router.get('/repopulate', function(req,res){
 		Cadastro.remove({}, function(err) { 
 			console.log('Cadastros removed')
 		});
 		BDPopulate();
 		res.redirect('/autorizar');
-	});
+	});*/
 	
 	
 	return router;
@@ -283,7 +290,7 @@ function BDAdmin(req, res){
 			return handleError(err,req,res);
 		}
 		if (user){
-			user.password = createHash('Fenix2018');
+			user.password = createHash('fenix2018');
 			user.save(function(err){
 				if (err) return handleError(err,req,res);
 			});
@@ -292,7 +299,7 @@ function BDAdmin(req, res){
 		var newUser = new User();
 		
 		newUser.username = 'fiscal';
-		newUser.password = createHash('Fenix2018');
+		newUser.password = createHash('fenix2018');
 		newUser.save(function (err) {
 			if (err) return handleError(err,req,res);
 		});
