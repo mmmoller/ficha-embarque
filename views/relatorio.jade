@@ -53,7 +53,6 @@ block content
 						th Grau
 						th Motivo
 						th Responsável
-						th Saram
 				tbody
 					-for (var j = 0, index = 1; j < cadastros.length; j++){
 						-for (var i = 0; i < cadastros[j].relacao.length; i+=4, index++){
@@ -65,7 +64,6 @@ block content
 								td #{cadastros[j].relacao[i+2]}
 								td #{cadastros[j].relacao[i+3]}
 								td #{cadastros[j].nome}
-								td #{cadastros[j].identidade}
 						-}
 					-}
 	div(style="margin-bottom: 20px")
