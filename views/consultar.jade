@@ -1,0 +1,53 @@
+extends layout
+block content
+	div.container(style="margin-top: 20px")
+		center
+			div.section-wall
+				h1.section-title Histórico de fichas de embarque
+				form(class='form-signin', action='/consultar', method='GET')
+					div.input-group
+						span.input-group-addon Saram/SIAPE
+						input.form-control(type='text', name='saram', required)
+					br
+					button(class='btn btn-lg btn-primary btn-block', type='submit') Consultar
+					span.clearfix
+	script.
+		$(document).ready(function() {
+			$('#default-table').DataTable( {
+				"language": {
+					"emptyTable": "Nenhuma ficha de embarque"
+				},
+				"paging": false,
+			} );
+		});
+	div.container.default-table-wrapper
+		center
+			table#default-table.display.compact.cell-border
+				thead
+					tr
+						th Data
+						th Trecho
+						th Nome
+						th Identidade
+						th Grau
+						th Motivo
+						th Responsável
+						th Situação
+				tbody
+					-for (var j = 0, index = 1; j < cadastros.length; j++){
+						-for (var i = 0; i < cadastros[j].relacao.length; i+=4, index++){
+							tr
+								td #{moment(cadastros[j].data).format("DD/MM/YYYY")}
+								td #{cadastros[j].trecho}
+								td #{cadastros[j].relacao[i]}
+								td #{cadastros[j].relacao[i+1]}
+								td #{cadastros[j].relacao[i+2]}
+								td #{cadastros[j].relacao[i+3]}
+								td #{cadastros[j].nome}
+								td #{cadastros[j].estado}
+						-}
+					-}
+	div(style="margin-bottom: 20px")
+		form(action='/', method='GET')
+			button(class='btn btn-primary', type='submit') Requisição de ficha de Embarque
+		

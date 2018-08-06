@@ -10,7 +10,7 @@ block content
 					br
 					if (trecho == "SLZ-AK")
 						.radio-inline
-							input(type='radio', name='trecho', value='SLZ-AK', checked='çhecked')
+							input(type='radio', name='trecho', value='SLZ-AK', checked='checked')
 							| SL x AK
 						.radio-inline
 							input(type='radio', name='trecho', value='AK-SLZ')
@@ -52,10 +52,7 @@ block content
 						title: "Ficha de Embarque",
 						customize: function ( win ) {
 							$(win.document.body)
-								.css( 'font-size', '8pt' )
-								.prepend(
-									'<img src="http://datatables.net/media/images/logo-fade.png" style="position:absolute; top:0; left:0;" />'
-								);
+								.css( 'font-size', '8pt' );
 
 							$(win.document.body).find( 'table' )
 								.addClass( 'compact' )
@@ -102,6 +99,10 @@ block content
 		div(style="margin-bottom: 20px")
 			form(action='/autorizar', method='GET')
 				button(class='btn btn-primary', type='submit') Autorizar
+	if (user == "admin")
+		div(style="margin-bottom: 20px")
+			form(action='/relatorio', method='GET')
+				button(class='btn btn-primary', type='submit') Relatório
 	div(style="margin-bottom: 20px")
 		form(action='/logout', method='GET')
 			button(class='btn btn-danger', type='submit') Sair

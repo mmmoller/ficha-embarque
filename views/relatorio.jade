@@ -1,0 +1,80 @@
+extends layout
+block content
+	div.container(style="margin-top: 20px")
+		center
+			div.section-wall
+				h1.section-title Relatório de Fichas de Embarque
+				form(class='form-signin', action='/relatorio', method='GET')
+					div.input-group
+						span.input-group-addon Data (AAAA-MM)
+						input.mes(type='text', name='data' class='form-control', value=data, autocomplete="off")
+					br
+					button(class='btn btn-lg btn-primary btn-block', type='submit') Visualizar Relatório
+					span.clearfix
+	script.
+		$(document).ready(function() {
+			$('#default-table').DataTable( {
+				"language": {
+					"emptyTable": "Nenhuma ficha de embarque"
+				},
+				"paging": false,
+				dom: 'lBfritip',
+				buttons: [
+					{
+						extend: 'print',
+						title: "Ficha de Embarque",
+						customize: function ( win ) {
+							$(win.document.body)
+								.css( 'font-size', '8pt' );
+
+							$(win.document.body).find( 'table' )
+								.addClass( 'compact' )
+								.css( 'font-size', 'inherit' )
+								.css( 'page-break-inside', 'auto');
+							
+							$(win.document.body).find( 'tbody:before' )
+								.css( 'line-height', '1em')
+								.css( 'content', '\200c' )
+								.css( 'display', 'block')
+						}
+					}
+				]
+			} );
+		});
+	div.container.default-table-wrapper.section-to-print
+		center
+			table#default-table.display.compact.cell-border
+				thead
+					tr
+						th Data e Trecho
+						//th Trecho
+						th Nome
+						th Identidade
+						th Grau
+						th Motivo
+						th Responsável
+						th Saram
+				tbody
+					-for (var j = 0, index = 1; j < cadastros.length; j++){
+						-for (var i = 0; i < cadastros[j].relacao.length; i+=4, index++){
+							tr
+								td #{moment(cadastros[j].data).format("DD/MM/YYYY")} #{cadastros[j].trecho}
+								//td #{cadastros[j].trecho}
+								td #{cadastros[j].relacao[i]}
+								td #{cadastros[j].relacao[i+1]}
+								td #{cadastros[j].relacao[i+2]}
+								td #{cadastros[j].relacao[i+3]}
+								td #{cadastros[j].nome}
+								td #{cadastros[j].identidade}
+						-}
+					-}
+	div(style="margin-bottom: 20px")
+		form(action='/autorizar', method='GET')
+			button(class='btn btn-primary', type='submit') Autorizar
+	div(style="margin-bottom: 20px")
+		form(action='/visualizar', method='GET')
+			button(class='btn btn-primary', type='submit') Visualizar
+	div(style="margin-bottom: 20px")
+		form(action='/logout', method='GET')
+			button(class='btn btn-danger', type='submit') Sair
+		

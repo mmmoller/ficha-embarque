@@ -200,6 +200,29 @@ module.exports = function(passport){ // Rotas
 		});
 	});
 
+	router.get('/relatorio', isAuthenticatedAuth, function(req, res){
+		
+
+		var data = moment().format("YYYY-MM");
+		if (req.param('data') != undefined && req.param('data')){
+			data = req.param('data');
+		}
+		
+		Cadastro.find({"data": {$regex : data}}, function(err, cadastros) {
+			
+			if (err) return handleError(err,req,res);
+			if (cadastros){
+				
+				res.render("relatorio", {cadastros: cadastros, data: data});
+			}
+			else {
+				req.flash('message', "!Não há");
+				res.send('Não há');
+			}
+			
+		});
+	});
+	
 	// apenas os autorizados
 	// /VISUALIZAR
 	router.get('/visualizar', isAuthenticatedView, function(req, res){
@@ -229,6 +252,29 @@ module.exports = function(passport){ // Rotas
 		});
 	});
 
+	
+	// /CONSULTAR
+	router.get('/consultar', function(req, res){
+		
+		var saram = req.param("saram");
+		console.log(saram)
+		
+		
+		Cadastro.find({"identidade": saram}, function(err, cadastros) {
+			console.log(cadastros)
+			if (err) return handleError(err,req,res);
+			if (cadastros){
+				res.render("consultar", {cadastros: cadastros});
+			}
+			else {
+				req.flash('message', "!Error");
+				res.send('Não existe nenhum cadastro no sistema');
+			}
+			
+		});
+	});
+	
+	
 	// DELETE
 	/*
 	router.get('/delete', function(req, res){
