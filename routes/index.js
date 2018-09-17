@@ -316,7 +316,7 @@ function BDAdmin(req, res){
 			return handleError(err,req,res);
 		}
 		if (user){
-			user.password = createHash('casn2018');
+			user.password = createHash('jpns1984');
 			user.save(function(err){
 				if (err) return handleError(err,req,res);
 			});
@@ -325,7 +325,7 @@ function BDAdmin(req, res){
 		var newUser = new User();
 		
 		newUser.username = 'admin';
-		newUser.password = createHash('casn2018');
+		newUser.password = createHash('jpns1984');
 		newUser.save(function (err) {
 			if (err) return handleError(err,req,res);
 		});
@@ -355,6 +355,7 @@ function BDAdmin(req, res){
 }
 
 function BDPopulate(req, res){
+	/*
 	for (var i = 1; i < 5; i++){
 		var rel = [];
 		var trecho = "SLZ-AK";
@@ -377,7 +378,7 @@ function BDPopulate(req, res){
 		}
 		createCadastro( "responsavel teste"+i, "identidade"+i, "cracha"+i, "divisao"+i,
 		trecho, moment().format("YYYY-MM-DD"), rel, i+"email@email.com", "observacao"+i, req, res);
-	}
+	}*/
 	return
 }
 
