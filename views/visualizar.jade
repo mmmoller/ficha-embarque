@@ -84,16 +84,21 @@ block content
 						th Responsável
 				tbody
 					-for (var j = 0, index = 1; j < cadastros.length; j++){
-						-for (var i = 0; i < cadastros[j].relacao.length; i+=4, index++){
-							tr
-								td #{index}
-								td #{moment(cadastros[j].data).format("DD/MM/YYYY")}
-								td #{cadastros[j].trecho}
-								td #{cadastros[j].relacao[i]}
-								td #{cadastros[j].relacao[i+1]}
-								td #{cadastros[j].relacao[i+2]}
-								td #{cadastros[j].relacao[i+3]}
-								td #{cadastros[j].nome}
+						-for (var i = 0; i < cadastros[j].relacao.length; i+=5, index++){
+							if(cadastros[j].relacao[i+4] == "Aprovado")
+								tr
+									td #{index}
+									td #{moment(cadastros[j].data).format("DD/MM/YYYY")}
+									td #{cadastros[j].trecho}
+									td #{cadastros[j].relacao[i]}
+									td #{cadastros[j].relacao[i+1]}
+									td #{cadastros[j].relacao[i+2]}
+									td #{cadastros[j].relacao[i+3]}
+									td #{cadastros[j].nome}
+							if(cadastros[j].relacao[i+4] == "Reprovado")
+								- index--;
+							
+
 						-}
 					-}
 	if (user == "admin")

@@ -39,8 +39,8 @@ block content
 								strong Nome
 							td #{cadastros[j].nome}
 							- for (var i = 0; i < 5; i++){
-								if (cadastros[j].relacao.length >= (i+1)*4)
-									td #{cadastros[j].relacao[i*4]}
+								if (cadastros[j].relacao.length >= (i+1)*5)
+									td #{cadastros[j].relacao[i*5]}
 								else
 									td -
 							- }
@@ -52,8 +52,8 @@ block content
 								strong Cracha / Identidade
 							td #{cadastros[j].cracha}
 							- for (var i = 0; i < 5; i++){
-								if (cadastros[j].relacao.length >= (i+1)*4)
-									td #{cadastros[j].relacao[i*4+1]}
+								if (cadastros[j].relacao.length >= (i+1)*5)
+									td #{cadastros[j].relacao[i*5+1]}
 								else
 									td -
 							- }
@@ -65,8 +65,8 @@ block content
 								strong Divisão / Grau de Parentesco
 							td #{cadastros[j].divisao}
 							- for (var i = 0; i < 5; i++){
-								if (cadastros[j].relacao.length >= (i+1)*4)
-									td #{cadastros[j].relacao[i*4+2]}
+								if (cadastros[j].relacao.length >= (i+1)*5)
+									td #{cadastros[j].relacao[i*5+2]}
 								else
 									td -
 							- }
@@ -78,8 +78,8 @@ block content
 								strong Trecho / Motivo
 							td #{cadastros[j].trecho}
 							- for (var i = 0; i < 5; i++){
-								if (cadastros[j].relacao.length >= (i+1)*4)
-									td #{cadastros[j].relacao[i*4+3]}
+								if (cadastros[j].relacao.length >= (i+1)*5)
+									td #{cadastros[j].relacao[i*5+3]}
 								else
 									td -
 							- }
@@ -93,7 +93,7 @@ block content
 								td
 									input.form-control(type='text', name='observacao', placeholder='Observação opcional')
 								- for (var i = 0; i < 5; i++){
-									if (cadastros[j].relacao.length >= (i+1)*4)
+									if (cadastros[j].relacao.length >= (i+1)*5)
 										td
 											select(name='autorizacao', class = 'form-control')
 												option(value = 'sim') Autorizado

@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "bcrypt-nodejs": "*",
-	"bluebird": "^3.5.1",
+    "bluebird": "^3.5.1",
     "body-parser": "~1.0.0",
     "connect-flash": "*",
     "cookie-parser": "~1.0.1",

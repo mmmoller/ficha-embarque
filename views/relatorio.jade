@@ -53,10 +53,11 @@ block content
 						th Identidade
 						th Grau
 						th Motivo
+						th Situação
 						th Responsável
 				tbody
 					-for (var j = 0, index = 1; j < cadastros.length; j++){
-						-for (var i = 0; i < cadastros[j].relacao.length; i+=4, index++){
+						-for (var i = 0; i < cadastros[j].relacao.length; i+=5, index++){
 							tr
 								td #{moment(cadastros[j].data).format("DD/MM/YYYY")} #{cadastros[j].trecho}
 								//td #{cadastros[j].trecho}
@@ -64,6 +65,7 @@ block content
 								td #{cadastros[j].relacao[i+1]}
 								td #{cadastros[j].relacao[i+2]}
 								td #{cadastros[j].relacao[i+3]}
+								td #{cadastros[j].relacao[i+4]}
 								td #{cadastros[j].nome}
 						-}
 					-}

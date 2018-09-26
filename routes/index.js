@@ -11,6 +11,18 @@ var nodemailer = require('nodemailer');
 module.exports = function(passport){ // Rotas
 	// /TESTE
 	// Testar como se comporta ao guardar uma data no BD
+	/*
+	router.get('/teste', function(req, res) {
+		var tarray = ["a0", "b0", "c0", "d0", "a2", "b2", "c2", "d2", "a3", "b3", "c3", "d3", "a0", "b0", "c0", "d0", "a2", "b2", "c2", "d2", "a3", "b3", "c3", "d3"];
+		for (var i = 0; i < tarray.length; i++){
+			if (i%5 == 3){
+				tarray.splice(i+1, 0, "e" + i/5)
+			}
+		}
+		console.log(tarray);
+		res.send("banana")
+
+	});*/
 	
 	// /'INDEX'
 	router.get('/', function(req, res) {
@@ -37,6 +49,13 @@ module.exports = function(passport){ // Rotas
 			var data = moment(newCadastro.data).format("YYYY-MM-DD");
 			//data.hour(0);
 			newCadastro.data = data;
+
+			for (var i = 0; i < newCadastro.relacao.length; i++){
+				if (i%5 == 3){
+					newCadastro.relacao.splice(i+1, 0, "Em análise");
+				}
+			}
+
 			newCadastro.save(function (err) {
 				if (err) return handleError(err,req,res);
 			});
@@ -46,9 +65,11 @@ module.exports = function(passport){ // Rotas
 				" foi realizada com sucesso para o dia " + moment(newCadastro.data).format("DD/MM/YYYY") + ", no trecho " + newCadastro.trecho +
 				", aguarde aprovação por-email. Segue a lista dos passageiros solicitada: \n\n";
 				
-			for (var i = 0, j = 0; i < newCadastro.relacao.length/4; i++, j++){
-				text+= newCadastro.relacao[i*4] + ". \n"
+			for (var i = 0; i < newCadastro.relacao.length/5; i++){
+				text+= newCadastro.relacao[i*5] + ". \n"
 			}
+
+			
 			
 			var subject = "Solicitação de embarque realizada - Aguarde aprovação"
 			
@@ -122,36 +143,28 @@ module.exports = function(passport){ // Rotas
 				
 				motivo = req.param("observacao");
 				
-				console.log(autorizacao)
-				console.log(autorizacao.length);
-				console.log(motivo);
-				
 				var text = 'A solicitação de embarque do(a) ' + cadastro.nome + 
 				" no dia " + moment(cadastro.data).format("DD/MM/YYYY") + ", no trecho " + cadastro.trecho +
-				" foi avaliada.\n\n Relação dos passageiros AUTORIZADOS: \n\n";
+				" foi avaliada.\n\n Relação dos passageiros APROVADOS: \n\n";
 				
-				for (var i = 0, j = 0; i < cadastro.relacao.length/4; i++, j++){
+				for (var i = 0, j = 0; i < cadastro.relacao.length/5; i++, j++){
 					
 					if (autorizacao[j] == "sim"){
-						text+= cadastro.relacao[i*4]
-						text+= " foi AUTORIZADO(A). \n";
+						text+= cadastro.relacao[i*5]
+						text+= " foi APROVADO(A). \n";
+						cadastro.relacao.splice((i*5)+4, 1, "Aprovado")
 					}
 				}
 				
-				text+= "\n Relação dos passageiros NÃO-autorizados: \n\n"
+				text+= "\n Relação dos passageiros REPROVADOS: \n\n"
 				
-				for (var i = 0, j = 0; i < cadastro.relacao.length/4; i++, j++){
+				for (var i = 0, j = 0; i < cadastro.relacao.length/5; i++, j++){
 					if (autorizacao[j] == "nao"){
-						text+= cadastro.relacao[i*4]
-						text+= " NÃO foi autorizado(a). \n"
-						cadastro.relacao.splice(i*4, 4);
-						i--;
+						text+= cadastro.relacao[i*5]
+						text+= " foi REPROVADO(a). \n"
+						cadastro.relacao.splice((i*5)+4, 1, "Reprovado")
 					}
 				}
-				
-				
-				
-				
 				
 				if (motivo){
 					text+="\n\nMotivo: " + motivo;
@@ -159,25 +172,37 @@ module.exports = function(passport){ // Rotas
 				
 				var subject = "Solicitação de embarque avaliada";
 				
-				Cadastro.find({"data": req.param("data"), "estado": "autorizada", "trecho": req.param("trecho")}, function(err, cadastros) {
+				Cadastro.find({"data": req.param("data"), "estado": "analisada", "trecho": req.param("trecho")}, function(err, cadastros) {
 		
 					if (err) return handleError(err,req,res);
 					if (cadastros){
 						var total = 0;
-						for (var i = 0; i < cadastros.length; i++)
-							total+= cadastros[i].relacao.length/4;
+
+						for (var i = 0; i < cadastros.length; i++){
+							for (var j = 4; j < cadastros[i].relacao.length; j+=5){
+								if (cadastros[i].relacao[j] == "Aprovado"){
+									total++;
+								}
+							}
+						}
+
+						for (var j = 4; j < cadastro.relacao.length; j+=5){
+							if (cadastro.relacao[j] == "Aprovado"){
+								total++;
+							}
+						}
 						
-						if (total+cadastro.relacao.length/4 > 30){
-							var msg = "!Solicitação avaliada com sucesso. Existem " + Number(total+cadastro.relacao.length/4) + " solitações autorizadas para esse trecho nessa data!"
+						if (total > 30){
+							var msg = "!Solicitação avaliada com sucesso. Existem " + Number(total) + " solitações autorizadas para esse trecho nessa data!"
 							req.flash('message', msg)
 						}
 						else{
-							var msg = "Solicitação avaliada com sucesso. Existem " + Number(total+cadastro.relacao.length/4) + " solitações autorizadas para esse trecho nessa data."
+							var msg = "Solicitação avaliada com sucesso. Existem " + Number(total) + " solitações autorizadas para esse trecho nessa data."
 							req.flash('message', msg);
 						}
 						
 						acceptMail(cadastro, text, subject);
-						cadastro.estado = "autorizada";
+						cadastro.estado = "analisada";
 						cadastro.save(function (err) {
 							if (err) return handleError(err,req,res);
 						});
@@ -237,7 +262,7 @@ module.exports = function(passport){ // Rotas
 			trecho = req.param("trecho");
 		}
 		
-		Cadastro.find({"data": data, "estado": "autorizada", "trecho": trecho}, function(err, cadastros) {
+		Cadastro.find({"data": data, "estado": "analisada", "trecho": trecho}, function(err, cadastros) {
 			
 			if (err) return handleError(err,req,res);
 			if (cadastros){
@@ -287,6 +312,7 @@ module.exports = function(passport){ // Rotas
 		res.send("Deletado");
 	});*/
 	
+	
 	// CRIAR
 	router.get('/criar', function(req,res){
 		BDAdmin();
@@ -304,6 +330,44 @@ module.exports = function(passport){ // Rotas
 		res.redirect('/autorizar');
 	});*/
 	
+	// Ajustar de 4 para 5
+	router.get('/ajustar', function(req,res){
+		Cadastro.find({}, function(err, cadastros) {
+			
+			if (err) return handleError(err,req,res);
+			if (cadastros){
+				
+				//console.log(cadastros)
+				for (var x = 0; x < cadastros.length; x++){
+					for (var i = 0; i < cadastros[x].relacao.length; i++){
+						if (i%5 == 3){
+							if (cadastros[x].estado == "solicitação de reserva"){
+								cadastros[x].relacao.splice(i+1, 0, "Em análise");
+							}
+							else if (cadastros[x].estado == "autorizada" || cadastros[x].estado == "analisada"){
+								cadastros[x].relacao.splice(i+1, 0, "Aprovado");
+								cadastros[x].estado = "analisada";
+							}
+						}
+					}
+					console.log(cadastros[x].relacao);
+					cadastros[x].save(function (err) {
+						if (err) return handleError(err,req,res);
+					});
+				}
+				res.send("Batata");
+
+
+			}
+			else {
+				req.flash('message', "!Não há");
+				res.send('Não há');
+			}
+			
+		});
+		
+	});
+
 	
 	return router;
 }
@@ -316,7 +380,10 @@ function BDAdmin(req, res){
 			return handleError(err,req,res);
 		}
 		if (user){
-			user.password = createHash('jpns1984');
+			if (process.env.ADMIN_PASS)
+				user.password = createHash(process.env.ADMIN_PASS);
+			else
+				user.password = createHash("admin");
 			user.save(function(err){
 				if (err) return handleError(err,req,res);
 			});
@@ -325,7 +392,10 @@ function BDAdmin(req, res){
 		var newUser = new User();
 		
 		newUser.username = 'admin';
-		newUser.password = createHash('jpns1984');
+		if (process.env.ADMIN_PASS)
+			newUser.password = createHash(process.env.ADMIN_PASS);
+		else
+			newUser.password = createHash("admin");
 		newUser.save(function (err) {
 			if (err) return handleError(err,req,res);
 		});
@@ -336,7 +406,10 @@ function BDAdmin(req, res){
 			return handleError(err,req,res);
 		}
 		if (user){
-			user.password = createHash('fenix2018');
+			if (process.env.FISCAL_PASS)
+				user.password = createHash(process.env.FISCAL_PASS);
+			else
+				user.password = createHash('fenix2018');
 			user.save(function(err){
 				if (err) return handleError(err,req,res);
 			});
@@ -345,7 +418,10 @@ function BDAdmin(req, res){
 		var newUser = new User();
 		
 		newUser.username = 'fiscal';
-		newUser.password = createHash('fenix2018');
+		if (process.env.FISCAL_PASS)
+			newUser.password = createHash(process.env.FISCAL_PASS);
+		else
+			newUser.password = createHash('fenix2018');
 		newUser.save(function (err) {
 			if (err) return handleError(err,req,res);
 		});
@@ -355,7 +431,7 @@ function BDAdmin(req, res){
 }
 
 function BDPopulate(req, res){
-	/*
+	
 	for (var i = 1; i < 5; i++){
 		var rel = [];
 		var trecho = "SLZ-AK";
@@ -375,12 +451,17 @@ function BDPopulate(req, res){
 			if (j%4 == 3){
 				rel[j] = "motivo" + i + "" + j
 			}
+			/*
+			if (j%5 == 4){
+				rel[j] = "solicitação"
+			}*/
 		}
 		createCadastro( "responsavel teste"+i, "identidade"+i, "cracha"+i, "divisao"+i,
 		trecho, moment().format("YYYY-MM-DD"), rel, i+"email@email.com", "observacao"+i, req, res);
-	}*/
+	}
 	return
 }
+
 
 function createCadastro(nome, identidade, cracha, divisao, 
 trecho, data, relacao, email, observacao, req, res){
@@ -404,7 +485,7 @@ trecho, data, relacao, email, observacao, req, res){
 function acceptMail(cadastro, text, subject){
 	
 	var texto = text +
-	"\n\nEssa mensagem é gerada automaticamente pelo sistema. O sistema ainda está em fase de teste.";
+	"\n\nEssa mensagem é gerada automaticamente pelo sistema. Favor não responder.";
 	
 	var mailOptions = {
 		from: 'fichaembarque@gmail.com',
@@ -422,42 +503,9 @@ function acceptMail(cadastro, text, subject){
 	});
 }
 
-function rejectMail(cadastro){
-	
-	var text = 'A solicitação de embarque do(a) ' + cadastro.posto + " " + cadastro.nome +
-	" foi rejeitada." + 
-	"\n\n\nEssa mensagem é gerada automaticamente pelo sistema. O sistema ainda está em fase de teste.";
-	
-	var mailOptions = {
-		from: 'fichaembarque@gmail.com',
-		to: cadastro.email,
-		subject: 'Solicitação de reserva rejeitada',
-		text: text
-	};
-
-	transporter.sendMail(mailOptions, function(error, info){
-		if (error) {
-			console.log(error);
-		} else {
-			console.log('Email sent: ' + info.response);
-		}
-	});
-}
-
 function handleError(err,req,res){
 	console.log(err);
 	res.send(err);
-}
-
-var isAuthenticated = function (req, res, next) {
-	// if user is authenticated in the session, call the next() to call the next request handler 
-	// Passport adds this method to request object. A middleware is allowed to add properties to
-	// request and response objects
-	
-	if (req.isAuthenticated())
-		return next();
-	// if the user is not authenticated then redirect him to the login page
-	res.redirect('/login');
 }
 
 var isAuthenticatedView = function (req, res, next) {
