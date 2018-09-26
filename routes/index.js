@@ -331,6 +331,7 @@ module.exports = function(passport){ // Rotas
 	});*/
 	
 	// Ajustar de 4 para 5
+	/*
 	router.get('/ajustar', function(req,res){
 		Cadastro.find({}, function(err, cadastros) {
 			
@@ -366,7 +367,7 @@ module.exports = function(passport){ // Rotas
 			
 		});
 		
-	});
+	});*/
 
 	
 	return router;
