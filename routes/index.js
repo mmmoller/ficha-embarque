@@ -401,11 +401,11 @@ module.exports = function(passport){ // Rotas
 	router.get('/consultar', function(req, res){
 		
 		var saram = req.param("saram");
-		console.log(saram)
+		//console.log(saram)
 		
 		
 		Cadastro.find({"identidade": saram}, function(err, cadastros) {
-			console.log(cadastros)
+			//console.log(cadastros)
 			if (err) return handleError(err,req,res);
 			if (cadastros){
 				res.render("consultar", {cadastros: cadastros});
@@ -673,7 +673,7 @@ var transporter = nodemailer.createTransport({
 	service: 'gmail',
 	auth: {
 		user: 'fichaembarque@gmail.com',
-		pass: process.env.EMAIL_PASS
+		pass: 'Senha123'
 	}
 });
 	
