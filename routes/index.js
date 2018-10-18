@@ -619,6 +619,8 @@ function acceptMail(cadastro, text, subject){
 		text: texto
 	};
 
+	console.log(process.env.EMAIL_PASS)
+
 	var transporter = nodemailer.createTransport({
 		service: 'gmail',
 		auth: {
