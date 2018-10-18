@@ -619,6 +619,8 @@ function acceptMail(cadastro, text, subject){
 		text: texto
 	};
 
+	console.log(process.env.EMAIL_PASS)
+
 	transporter.sendMail(mailOptions, function(error, info){
 		if (error) {
 			console.log(error);
