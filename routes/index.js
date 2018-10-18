@@ -619,13 +619,13 @@ function acceptMail(cadastro, text, subject){
 		text: texto
 	};
 
-	console.log(process.env.EMAIL_PASS)
+	//console.log(process.env.EMAIL_PASS)
 
 	var transporter = nodemailer.createTransport({
 		service: 'gmail',
 		auth: {
 			user: 'fichaembarque@gmail.com',
-			pass: 'Senha123'
+			pass: process.env.EMAIL_PASS
 		}
 	});
 
