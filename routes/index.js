@@ -621,6 +621,14 @@ function acceptMail(cadastro, text, subject){
 
 	console.log(process.env.EMAIL_PASS)
 
+	var transporter = nodemailer.createTransport({
+		service: 'gmail',
+		auth: {
+			user: 'fichaembarque@gmail.com',
+			pass: process.env.EMAIL_PASS
+		}
+	});
+
 	transporter.sendMail(mailOptions, function(error, info){
 		if (error) {
 			console.log(error);
@@ -671,12 +679,6 @@ var createHash = function(password){
 	return bCrypt.hashSync(password, bCrypt.genSaltSync(10), null);
 }
 
-var transporter = nodemailer.createTransport({
-	service: 'gmail',
-	auth: {
-		user: 'fichaembarque@gmail.com',
-		pass: 'Senha123'
-	}
-});
+
 	
 }
