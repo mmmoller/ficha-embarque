@@ -3,7 +3,24 @@ block content
 	div.container(style="margin-top: 20px")
 		center
 			div.section-wall
-				h1.section-title Fichas de Embarque aguardando avaliação
+				h1.section-title Fichas de Embarque avaliadas
+				form(class='form-signin', action='/alterar', method='GET')
+					input#from(type='text', name='from' class='form-control', placeholder='Data', autocomplete="off")
+					input#data(type='hidden', name='data', class='form-control')
+					br
+					button(class='btn btn-lg btn-primary btn-block', type='submit') Consultar
+					span.clearfix
+	script.
+		$( function() {
+			var dateFormat = "dd/mm/yy",
+			from = $( "#from" ).datepicker(
+			{ showOtherMonths: true,
+			selectOtherMonths: true,
+			dateFormat: dateFormat,
+			altField: "#data",
+			altFormat: "yy-mm-dd"
+			});
+		});
 	script.
 		$(document).ready(function() {
 			$('#default-table').DataTable( {
@@ -86,7 +103,7 @@ block content
 							td -
 							
 						tr
-							form(action='/autorizar', method='POST')
+							form(action='/alterar', method='POST')
 								td #{moment(cadastros[j].data).format("DD/MM/YYYY")}
 								td #{cadastros[j].nome}
 								td #{cadastros[j].observacao}
@@ -95,9 +112,14 @@ block content
 								- for (var i = 0; i < 5; i++){
 									if (cadastros[j].relacao.length >= (i+1)*5)
 										td
-											select(name='autorizacao', class = 'form-control')
-												option(value = 'sim') Autorizado
-												option(value = 'nao') Não-Autorizado
+											if (cadastros[j].relacao[i*5+4] == "Aprovado")
+												select(name='autorizacao', class = 'form-control')
+													option(value = 'sim') Autorizado
+													option(value = 'nao') Não-Autorizado
+											if (cadastros[j].relacao[i*5+4] == "Reprovado")
+												select(name='autorizacao', class = 'form-control')
+													option(value = 'nao') Não-Autorizado
+													option(value = 'sim') Autorizado
 									else
 										td -
 								- }
@@ -105,7 +127,7 @@ block content
 									input(type='hidden', name='_id', value=cadastros[j]._id)
 									input(type='hidden', name='data', value=cadastros[j].data)
 									input(type='hidden', name='trecho', value=cadastros[j].trecho)
-									button(class='btn btn-primary', type='submit') Avaliar
+									button(class='btn btn-primary', type='submit') Reavaliar
 						tr
 							td ---------
 							td ---------
@@ -118,4 +140,5 @@ block content
 							td ---------
 							td ---------
 					-}
+	
 		

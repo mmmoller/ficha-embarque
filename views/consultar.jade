@@ -1,5 +1,8 @@
 extends layout
 block content
+	div(style="margin-bottom: 20px; margin-top: 20px")
+		form(action='/', method='GET')
+			button(class='btn btn-primary', type='submit', style="width:50%") Requisição de ficha de Embarque
 	div.container(style="margin-top: 20px")
 		center
 			div.section-wall
@@ -49,7 +52,5 @@ block content
 								td #{cadastros[j].nome}
 						-}
 					-}
-	div(style="margin-bottom: 20px")
-		form(action='/', method='GET')
-			button(class='btn btn-primary', type='submit') Requisição de ficha de Embarque
+	
 		

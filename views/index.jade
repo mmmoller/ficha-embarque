@@ -93,6 +93,9 @@ block content
 			document.getElementById("myTable").deleteRow(i);
 			index-=4;
 		}
+	div(style="margin-bottom: 20px; margin-top: 20px")
+		form(action='/consultar', method='GET')
+			button(class='btn btn-primary', type='submit', style="width:50%") Consultar situação de Reserva
 	form(action='/', method='POST')
 		div.container.default-table-wrapper
 			center
@@ -133,7 +136,7 @@ block content
 							td(colspan="2")
 								div.input-group
 									span.input-group-addon Data
-									input#from(type='text', name='from' class='form-control', placeholder='Data', autocomplete="off", size="500", required)
+									input#from(type='text', name='from' class='form-control', autocomplete="off", size="500", required)
 									input#data(type='hidden', name='data', class='form-control')
 							td(colspan="2")
 								div.input-group
@@ -204,7 +207,7 @@ block content
 								p(style="text-align: justify")
 									| Compreendo que a embarcação é de propriedade do Grupamento de Apoio de Alcântara e utilizada para o transporte (SL/AK/SL) exclusivo do  efetivo  (militares,  civis  e  dependentes)  do  GAP-AK/CLA,  sendo operada por mestres e marinheiros do  GAP-AK/CLA, treinados e autorizados pela Capitania dos Portos do Maranhão.
 								p(style="text-align: justify")
-									| Reconheço que o respectivo transporte é mera liberalidade da Chefia do GAP-AK, e, por inexistir qualquer contraprestação, caracteriza- se como transporte de cortesia, regrado pelo art. 736 do Código Civil Brasileiro. Portanto, há isenção de qualquer responsabilização objetiva por parte do GAP-AK.
+									| Reconheço que o respectivo transporte é mera liberalidade da Chefia do GAP-AK, e, por inexistir qualquer contraprestação, caracteriza-se como transporte de cortesia, regrado pelo art. 736 do Código Civil Brasileiro. Portanto, há isenção de qualquer responsabilização objetiva por parte do GAP-AK.
 								p(style="text-align: justify")
 									| Por fim, declaro ter ciência de que o GAP-AK, sua diretoria e/ou funcionários e/ou prepostos, 
 									strong não se responsabilizam 
@@ -252,6 +255,3 @@ block content
 									| A requisição deve ser solicitada até 
 									strong 48 horas 
 									| antes do dia que se necessita embarcar.
-	div(style="margin-bottom: 20px")
-		form(action='/consultar', method='GET')
-			button(class='btn btn-primary', type='submit') Consultar situação de Reserva

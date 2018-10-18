@@ -11,8 +11,8 @@ var nodemailer = require('nodemailer');
 module.exports = function(passport){ // Rotas
 	// /TESTE
 	// Testar como se comporta ao guardar uma data no BD
-	/*
 	router.get('/teste', function(req, res) {
+		/*
 		var tarray = ["a0", "b0", "c0", "d0", "a2", "b2", "c2", "d2", "a3", "b3", "c3", "d3", "a0", "b0", "c0", "d0", "a2", "b2", "c2", "d2", "a3", "b3", "c3", "d3"];
 		for (var i = 0; i < tarray.length; i++){
 			if (i%5 == 3){
@@ -20,9 +20,9 @@ module.exports = function(passport){ // Rotas
 			}
 		}
 		console.log(tarray);
+		*/
 		res.send("banana")
-
-	});*/
+	});
 	
 	// /'INDEX'
 	router.get('/', function(req, res) {
@@ -117,7 +117,7 @@ module.exports = function(passport){ // Rotas
 		Cadastro.find({'estado': "solicitação de reserva"}, function(err, cadastros) {
 			if (err) return handleError(err,req,res);
 			if (cadastros){
-				res.render('autorizar', {cadastros: cadastros, message: req.flash('message')});
+				res.render('autorizar', {cadastros: cadastros, user: req.user.username, message: req.flash('message')});
 			}
 			else {
 				req.flash('message', "Não existem solicitações");
@@ -225,6 +225,125 @@ module.exports = function(passport){ // Rotas
 		});
 	});
 
+	// /ALTERAR
+	router.get('/alterar', isAuthenticatedAuth, function(req, res){
+
+		var data = moment().format("YYYY-MM-DD");
+		if (req.param('data') != undefined && req.param('data')){
+			data = moment(req.param('data')).format("YYYY-MM-DD");
+		}
+		
+		Cadastro.find({"data": data, 'estado': "analisada"}, function(err, cadastros) {
+			if (err) return handleError(err,req,res);
+			if (cadastros){
+				res.render('alterar', {cadastros: cadastros, user: req.user.username, message: req.flash('message')});
+			}
+			else {
+				req.flash('message', "Não existem solicitações");
+				res.redirect('/alterar');
+			}
+		});
+	});
+
+	router.post('/alterar', isAuthenticatedAuth, function(req, res){
+		
+		Cadastro.findOne({_id: req.param('_id')},function(err, cadastro){
+			if (err) return handleError(err,req,res);
+			if (cadastro){
+				
+				var autorizacao = {};
+				
+				if (Array.isArray(req.param("autorizacao"))){
+					autorizacao = req.param("autorizacao");
+				}
+				else {
+					autorizacao = [req.param("autorizacao")];
+				}
+				
+				motivo = req.param("observacao");
+				
+				var text = 'A solicitação de embarque do(a) ' + cadastro.nome + 
+				" no dia " + moment(cadastro.data).format("DD/MM/YYYY") + ", no trecho " + cadastro.trecho +
+				" foi REavaliada.\n\n Relação dos passageiros APROVADOS: \n\n";
+				
+				for (var i = 0, j = 0; i < cadastro.relacao.length/5; i++, j++){
+					
+					if (autorizacao[j] == "sim"){
+						text+= cadastro.relacao[i*5]
+						text+= " foi APROVADO(A). \n";
+						cadastro.relacao.splice((i*5)+4, 1, "Aprovado")
+					}
+				}
+				
+				text+= "\n Relação dos passageiros REPROVADOS: \n\n"
+				
+				for (var i = 0, j = 0; i < cadastro.relacao.length/5; i++, j++){
+					if (autorizacao[j] == "nao"){
+						text+= cadastro.relacao[i*5]
+						text+= " foi REPROVADO(a). \n"
+						cadastro.relacao.splice((i*5)+4, 1, "Reprovado")
+					}
+				}
+				
+				if (motivo){
+					text+="\n\nMotivo: " + motivo;
+				}
+				
+				var subject = "Solicitação de embarque REavaliada";
+				
+				Cadastro.find({"data": req.param("data"), "estado": "analisada", "trecho": req.param("trecho")}, function(err, cadastros) {
+		
+					if (err) return handleError(err,req,res);
+					if (cadastros){
+						var total = 0;
+
+						for (var i = 0; i < cadastros.length; i++){
+							for (var j = 4; j < cadastros[i].relacao.length; j+=5){
+								if (cadastros[i].relacao[j] == "Aprovado"){
+									total++;
+								}
+							}
+						}
+
+						for (var j = 4; j < cadastro.relacao.length; j+=5){
+							if (cadastro.relacao[j] == "Aprovado"){
+								total++;
+							}
+						}
+						
+						if (total > 30){
+							var msg = "!Solicitação REavaliada com sucesso. Existem " + Number(total) + " solitações autorizadas para esse trecho nessa data!"
+							req.flash('message', msg)
+						}
+						else{
+							var msg = "Solicitação REavaliada com sucesso. Existem " + Number(total) + " solitações autorizadas para esse trecho nessa data."
+							req.flash('message', msg);
+						}
+						
+						acceptMail(cadastro, text, subject);
+						cadastro.estado = "analisada";
+						cadastro.save(function (err) {
+							if (err) return handleError(err,req,res);
+						});
+						if (cadastro.relacao.length == 0)
+							cadastro.remove();
+						
+						res.redirect('/alterar');
+					}
+					else {
+						req.flash('message', "!Não há cadastros no sistema!");
+					}
+					
+				});
+			}
+			else {
+				req.flash('message', "!Solicitação não existente");
+				res.redirect('/autorizar');
+			}
+		
+		});
+	});
+
 	router.get('/relatorio', isAuthenticatedAuth, function(req, res){
 		
 
@@ -238,7 +357,7 @@ module.exports = function(passport){ // Rotas
 			if (err) return handleError(err,req,res);
 			if (cadastros){
 				
-				res.render("relatorio", {cadastros: cadastros, data: data});
+				res.render("relatorio", {cadastros: cadastros, data: data, user: req.user.username});
 			}
 			else {
 				req.flash('message', "!Não há");
@@ -301,38 +420,40 @@ module.exports = function(passport){ // Rotas
 	
 	
 	// DELETE
-	/*
 	router.get('/delete', function(req, res){
+		/*
 		User.remove({}, function(err) { 
 			console.log('Users removed')
 		});
 		Cadastro.remove({}, function(err) { 
 			console.log('Cadastros removed')
 		});
+		*/
 		res.send("Deletado");
-	});*/
-	
+	});
 	
 	// CRIAR
 	router.get('/criar', function(req,res){
-		BDAdmin();
+		//BDAdmin();
 		//BDPopulate();
 		res.send("Criado");
 	});
 	
 	// REPOPULATE
-	/*
+	
 	router.get('/repopulate', function(req,res){
+		/*
 		Cadastro.remove({}, function(err) { 
 			console.log('Cadastros removed')
 		});
 		BDPopulate();
-		res.redirect('/autorizar');
-	});*/
+		res.redirect('/autorizar');*/
+		res.send("Repopulate");
+	});
 	
 	// Ajustar de 4 para 5
-	/*
 	router.get('/ajustar', function(req,res){
+		/*
 		Cadastro.find({}, function(err, cadastros) {
 			
 			if (err) return handleError(err,req,res);
@@ -356,7 +477,7 @@ module.exports = function(passport){ // Rotas
 						if (err) return handleError(err,req,res);
 					});
 				}
-				res.send("Batata");
+				res.send("Ajustar");
 
 
 			}
@@ -366,8 +487,9 @@ module.exports = function(passport){ // Rotas
 			}
 			
 		});
-		
-	});*/
+		*/
+		res.send("Ajustar")
+	});
 
 	
 	return router;
@@ -486,7 +608,9 @@ trecho, data, relacao, email, observacao, req, res){
 function acceptMail(cadastro, text, subject){
 	
 	var texto = text +
-	"\n\nEssa mensagem é gerada automaticamente pelo sistema. Favor não responder.";
+	"\n\nA ficha de embarque é avaliada pelo Chefe da Seção de Transporte Marítimo, para eventuais dúvidas, entrar em contato através do funcional (98)99126-0456." +
+	"\n\nEssa mensagem é gerada automaticamente pelo sistema, favor não responder.";
+	
 	
 	var mailOptions = {
 		from: 'fichaembarque@gmail.com',
@@ -549,7 +673,7 @@ var transporter = nodemailer.createTransport({
 	service: 'gmail',
 	auth: {
 		user: 'fichaembarque@gmail.com',
-		pass: 'Senha123'
+		pass: process.env.EMAIL_PASS
 	}
 });
 	

@@ -101,15 +101,8 @@ block content
 
 						-}
 					-}
-	if (user == "admin")
+	if (user == "fiscal")
 		div(style="margin-bottom: 20px")
-			form(action='/autorizar', method='GET')
-				button(class='btn btn-primary', type='submit') Autorizar
-	if (user == "admin")
-		div(style="margin-bottom: 20px")
-			form(action='/relatorio', method='GET')
-				button(class='btn btn-primary', type='submit') Relatório
-	div(style="margin-bottom: 20px")
-		form(action='/logout', method='GET')
-			button(class='btn btn-danger', type='submit') Sair
+			form(action='/logout', method='GET')
+				button(class='btn btn-danger', type='submit', style="width:50%") Sair
 		

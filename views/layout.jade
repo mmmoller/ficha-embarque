@@ -29,6 +29,19 @@ html
 			});
 	body.body-background
 		img(src="/img/logo.png", style='width:100%')
+	if (user)
+		div(style="margin-bottom: 20px; margin-top: 20px;")
+			if (user == "admin")
+				form.btn-group(action='/autorizar', method='GET', style='width: 20%')
+					button(class='btn btn-primary btn-block', type='submit') Autorizar
+				form.btn-group(action='/alterar', method='GET', style='width: 20%')
+					button(class='btn btn-primary btn-block', type='submit') Alterar
+				form.btn-group(action='/relatorio', method='GET', style='width: 20%')
+					button(class='btn btn-primary btn-block', type='submit') Relatório
+				form.btn-group(action='/visualizar', method='GET', style='width: 20%')
+					button(class='btn btn-primary btn-block', type='submit') Visualizar
+				form.btn-group(action='/logout', method='GET', style='width: 20%')
+					button(class='btn btn-danger btn-block', type='submit') Sair
 	-if ( message != undefined && message.length){
 		div.container(style="margin-top:30px")
 			div.row
