@@ -167,7 +167,7 @@ module.exports = function(passport){ // Rotas
 				}
 				
 				if (motivo){
-					text+="\n\nMotivo: " + motivo;
+					text+="\n\nObservação: " + motivo;
 				}
 				
 				var subject = "Solicitação de embarque avaliada";
@@ -286,7 +286,7 @@ module.exports = function(passport){ // Rotas
 				}
 				
 				if (motivo){
-					text+="\n\nMotivo: " + motivo;
+					text+="\n\nObservação: " + motivo;
 				}
 				
 				var subject = "Solicitação de embarque REavaliada";
