@@ -625,7 +625,7 @@ function acceptMail(cadastro, text, subject){
 		service: 'gmail',
 		auth: {
 			user: 'fichaembarque@gmail.com',
-			pass: process.env.EMAIL_PASS
+			pass: 'Senha123'
 		}
 	});
 
