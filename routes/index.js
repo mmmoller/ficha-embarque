@@ -142,6 +142,7 @@ module.exports = function(passport){ // Rotas
 				}
 				
 				motivo = req.param("observacao");
+				cadastro.avaliacao = motivo;
 				
 				var text = 'A solicitação de embarque do(a) ' + cadastro.nome + 
 				" no dia " + moment(cadastro.data).format("DD/MM/YYYY") + ", no trecho " + cadastro.trecho +
@@ -261,6 +262,7 @@ module.exports = function(passport){ // Rotas
 				}
 				
 				motivo = req.param("observacao");
+				cadastro.avaliacao = motivo;
 				
 				var text = 'A solicitação de embarque do(a) ' + cadastro.nome + 
 				" no dia " + moment(cadastro.data).format("DD/MM/YYYY") + ", no trecho " + cadastro.trecho +
@@ -434,7 +436,7 @@ module.exports = function(passport){ // Rotas
 	
 	// CRIAR
 	router.get('/criar', function(req,res){
-		//BDAdmin();
+		BDAdmin();
 		//BDPopulate();
 		res.send("Criado");
 	});

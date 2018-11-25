@@ -10,5 +10,6 @@ module.exports = mongoose.model('Cadastro',{
 	relacao: [String],
 	estado: String,
 	email: String,
-	observacao: String
+	observacao: String,
+	avaliacao: String
 });
