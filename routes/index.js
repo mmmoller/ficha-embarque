@@ -24,6 +24,11 @@ module.exports = function(passport){ // Rotas
 		res.send("banana")
 	});
 	
+	// NOVO ENDEREÇO!
+	router.get('*', function(req,res){  
+	    	res.redirect('https://www.embarquecla.tk/index.php/solicitacao-lancha');
+	});
+	
 	// /'INDEX'
 	router.get('/', function(req, res) {
 		res.render('index', {message: req.flash('message')});
